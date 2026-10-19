@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowRight, BookOpen, Clock } from 'lucide-react';
 import { Tilt3D } from './Tilt3D';
 import { Article } from '../types/content';
+import { resolveImageUrl } from '../utils/imageHelper';
 
 interface ArticleCardProps {
   article: Article;
@@ -11,6 +12,7 @@ interface ArticleCardProps {
 
 export const ArticleCard: React.FC<ArticleCardProps> = ({ article, onClick, variant = 'standard' }) => {
   const [imageError, setImageError] = useState(false);
+  const imageUrl = resolveImageUrl(article.image);
 
   if (variant === 'horizontal') {
     return (
@@ -26,7 +28,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, onClick, vari
           >
             {!imageError ? (
               <img
-                src={article.image}
+                src={imageUrl}
                 alt={article.title}
                 onError={() => setImageError(true)}
                 referrerPolicy="no-referrer"
@@ -97,7 +99,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, onClick, vari
         >
           {!imageError ? (
             <img
-              src={article.image}
+              src={imageUrl}
               alt={article.title}
               onError={() => setImageError(true)}
               referrerPolicy="no-referrer"

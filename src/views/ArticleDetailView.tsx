@@ -16,6 +16,7 @@ import { PinterestModal } from '../components/PinterestModal';
 import { Tilt3D } from '../components/Tilt3D';
 import { ARTICLES_DATA } from '../data/articles';
 import { RECIPES_DATA } from '../data/recipes';
+import { resolveImageUrl } from '../utils/imageHelper';
 import { ActivePage, Article } from '../types/content';
 
 interface ArticleDetailViewProps {
@@ -117,7 +118,7 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({ article, o
         <Tilt3D maxTilt={5} scale={1.01} glare={true} className="rounded-3xl overflow-hidden shadow-xl">
           <div className="relative aspect-[16/10] sm:aspect-[16/9] rounded-3xl overflow-hidden bg-stone-100" style={{ transformStyle: 'preserve-3d' }}>
             <img
-              src={article.image}
+              src={resolveImageUrl(article.image)}
               alt={article.title}
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"

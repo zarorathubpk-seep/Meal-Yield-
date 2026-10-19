@@ -8,6 +8,7 @@ import { RECIPES_DATA } from '../data/recipes';
 import { ARTICLES_DATA } from '../data/articles';
 import { COOKING_VIDEOS_DATA } from '../data/videos';
 import { ActivePage, CookingVideo } from '../types/content';
+import { resolveImageUrl } from '../utils/imageHelper';
 
 interface HomeViewProps {
   onNavigate: (page: ActivePage) => void;
@@ -28,12 +29,12 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onSelectVideo })
 
   // Global Cuisines Cards
   const cuisineCards = [
-    { name: 'Pakistani', count: '12 Recipes & Guides', flag: '🇵🇰', image: '/src/assets/images/chicken_karahi_1792407742450.jpg', desc: 'Iron wok karahis, slow-simmered nihari & aromatic biryani' },
-    { name: 'Italian', count: '14 Recipes & Guides', flag: '🇮🇹', image: '/src/assets/images/margherita_pizza_1792407744383.jpg', desc: 'Wood-fired pizza, handmade pasta & silky carbonara' },
-    { name: 'Indian', count: '16 Recipes & Guides', flag: '🇮🇳', image: '/src/assets/images/chicken_biryani_1792407744625.jpg', desc: 'Velvety butter chicken, slow daal tadka & fragrant pulao' },
-    { name: 'American', count: '10 Recipes & Guides', flag: '🇺🇸', image: '/src/assets/images/american_cheeseburger_1792407744496.jpg', desc: 'Smashed diner burgers, buttermilk chicken & fluffy pancakes' },
-    { name: 'British', count: '9 Recipes & Guides', flag: '🇬🇧', image: '/src/assets/images/fish_and_chips_1792407746022.jpg', desc: 'Crisp ale-battered cod, shepherd’s pie & traditional roasts' },
-    { name: 'Bangladeshi', count: '8 Recipes & Guides', flag: '🇧🇩', image: '/src/assets/images/chicken_biryani_1792407744625.jpg', desc: 'Old Dhaka kacchi biryani, chicken bhuna & spiced khichuri' },
+    { name: 'Pakistani', count: '12 Recipes & Guides', flag: '🇵🇰', image: '/images/pakistani-chicken-karahi.jpg', desc: 'Iron wok karahis, slow-simmered nihari & aromatic biryani' },
+    { name: 'Italian', count: '14 Recipes & Guides', flag: '🇮🇹', image: '/images/italian-margherita-pizza.jpg', desc: 'Wood-fired pizza, handmade pasta & silky carbonara' },
+    { name: 'Indian', count: '16 Recipes & Guides', flag: '🇮🇳', image: '/images/butter-chicken.jpg', desc: 'Velvety butter chicken, slow daal tadka & fragrant pulao' },
+    { name: 'American', count: '10 Recipes & Guides', flag: '🇺🇸', image: '/images/american-cheeseburger.jpg', desc: 'Smashed diner burgers, buttermilk chicken & fluffy pancakes' },
+    { name: 'British', count: '9 Recipes & Guides', flag: '🇬🇧', image: '/images/british-fish-and-chips.jpg', desc: 'Crisp ale-battered cod, shepherd’s pie & traditional roasts' },
+    { name: 'Bangladeshi', count: '8 Recipes & Guides', flag: '🇧🇩', image: '/images/bangladeshi-kacchi-biryani.jpg', desc: 'Old Dhaka kacchi biryani, chicken bhuna & spiced khichuri' },
   ];
 
   return (
@@ -101,7 +102,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onSelectVideo })
                   <div className="flex items-center gap-4" style={{ transform: 'translateZ(15px)' }}>
                     <div className="w-16 h-16 rounded-2xl overflow-hidden bg-stone-100 shrink-0 relative shadow-inner">
                       <img
-                        src={c.image}
+                        src={resolveImageUrl(c.image)}
                         alt={c.name}
                         referrerPolicy="no-referrer"
                         loading="lazy"

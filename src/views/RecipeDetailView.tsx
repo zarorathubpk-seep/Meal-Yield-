@@ -18,6 +18,7 @@ import { PinterestModal } from '../components/PinterestModal';
 import { Tilt3D } from '../components/Tilt3D';
 import { RECIPES_DATA } from '../data/recipes';
 import { scaleIngredient, formatIngredientAmount, convertUnit } from '../utils/recipeCalculator';
+import { resolveImageUrl } from '../utils/imageHelper';
 import { ActivePage, Recipe } from '../types/content';
 
 interface RecipeDetailViewProps {
@@ -144,7 +145,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipe, onNa
         <Tilt3D maxTilt={5} scale={1.01} glare={true} className="rounded-3xl overflow-hidden shadow-xl">
           <div className="relative aspect-[16/10] sm:aspect-[16/9] rounded-3xl overflow-hidden bg-stone-100" style={{ transformStyle: 'preserve-3d' }}>
             <img
-              src={recipe.image}
+              src={resolveImageUrl(recipe.image)}
               alt={recipe.title}
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"

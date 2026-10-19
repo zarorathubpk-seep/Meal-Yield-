@@ -3,6 +3,8 @@ import { ChevronLeft, ChevronRight, ArrowRight, Clock, Users, Sparkles } from 'l
 import { Tilt3D } from './Tilt3D';
 import { ActivePage } from '../types/content';
 
+import { resolveImageUrl } from '../utils/imageHelper';
+
 interface HeroCarouselProps {
   onNavigate: (page: ActivePage) => void;
 }
@@ -31,7 +33,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onNavigate }) => {
       description: 'Wok-seared bone-in chicken in fragrant tomato masala with fresh ginger matchsticks and sliced chilies.',
       cookTime: '30 mins',
       servings: '4 servings',
-      image: '/src/assets/images/chicken_karahi_1792407742450.jpg',
+      image: '/images/pakistani-chicken-karahi.jpg',
       type: 'recipe',
     },
     {
@@ -43,7 +45,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onNavigate }) => {
       description: 'Wood-fired blistered crust with sweet San Marzano tomatoes, fresh buffalo mozzarella & garden basil.',
       cookTime: '8 mins bake',
       servings: '2 servings',
-      image: '/src/assets/images/margherita_pizza_1792407744383.jpg',
+      image: '/images/italian-margherita-pizza.jpg',
       type: 'recipe',
     },
     {
@@ -55,7 +57,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onNavigate }) => {
       description: 'Double smashed 80/20 beef chuck patties with lace-crisp crust, draped in melting aged sharp cheddar.',
       cookTime: '8 mins',
       servings: '2 servings',
-      image: '/src/assets/images/american_cheeseburger_1792407744496.jpg',
+      image: '/images/american-cheeseburger.jpg',
       type: 'recipe',
     },
     {
@@ -67,7 +69,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onNavigate }) => {
       description: 'Fragrant saffron-tinted long-grain basmati steamed with spice-infused chicken and caramelized onions.',
       cookTime: '45 mins',
       servings: '6 servings',
-      image: '/src/assets/images/chicken_biryani_1792407744625.jpg',
+      image: '/images/royal-chicken-biryani.jpg',
       type: 'recipe',
     },
     {
@@ -79,7 +81,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onNavigate }) => {
       description: 'Crisp amber ale battered Atlantic cod fillet paired with hand-cut triple-cooked chips and minted mushy peas.',
       cookTime: '25 mins',
       servings: '4 servings',
-      image: '/src/assets/images/fish_and_chips_1792407746022.jpg',
+      image: '/images/british-fish-and-chips.jpg',
       type: 'recipe',
     },
     {
@@ -91,7 +93,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onNavigate }) => {
       description: 'Silky emulsion of farm-fresh egg yolks, Pecorino Romano DOP, crisp cured guanciale & black pepper.',
       cookTime: '15 mins',
       servings: '2 servings',
-      image: '/src/assets/images/italian_pasta_1792407766508.jpg',
+      image: '/images/italian-pasta-carbonara.jpg',
       type: 'recipe',
     },
   ];
@@ -244,7 +246,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onNavigate }) => {
                     style={{ transform: 'translateZ(18px)', transformStyle: 'preserve-3d' }}
                   >
                     <img
-                      src={currentItem.image}
+                      src={resolveImageUrl(currentItem.image)}
                       alt={currentItem.title}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Clock, Users, ArrowRight, Utensils } from 'lucide-react';
 import { Tilt3D } from './Tilt3D';
 import { Recipe } from '../types/content';
+import { resolveImageUrl } from '../utils/imageHelper';
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -11,6 +12,7 @@ interface RecipeCardProps {
 
 export const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onClick, variant = 'standard' }) => {
   const [imageError, setImageError] = useState(false);
+  const imageUrl = resolveImageUrl(recipe.image);
 
   return (
     <Tilt3D
@@ -35,9 +37,12 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onClick, variant
         >
           {!imageError ? (
             <img
-              src={recipe.image}
+              src={imageUrl}
               alt={recipe.title}
-              onError={() => setImageError(true)}
+              onError={() => {
+                console.warn(`Image failed to load for recipe: ${recipe.title} (${imageUrl})`);
+                setImageError(true);
+              }}
               referrerPolicy="no-referrer"
               loading="lazy"
               className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"

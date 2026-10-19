@@ -4,6 +4,7 @@ import { ArticleCard } from '../components/ArticleCard';
 import { Tilt3D } from '../components/Tilt3D';
 import { ARTICLES_DATA } from '../data/articles';
 import { filterContent } from '../utils/recipeCalculator';
+import { resolveImageUrl } from '../utils/imageHelper';
 import { ActivePage, Article } from '../types/content';
 
 interface BlogViewProps {
@@ -79,7 +80,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 <img
-                  src={featuredStory.image}
+                  src={resolveImageUrl(featuredStory.image)}
                   alt={featuredStory.title}
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"

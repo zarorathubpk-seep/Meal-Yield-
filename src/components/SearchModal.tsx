@@ -3,6 +3,7 @@ import { Search, X, Utensils, BookOpen, Clock, ArrowRight } from 'lucide-react';
 import { RECIPES_DATA } from '../data/recipes';
 import { ARTICLES_DATA } from '../data/articles';
 import { filterContent } from '../utils/recipeCalculator';
+import { resolveImageUrl } from '../utils/imageHelper';
 import { ActivePage } from '../types/content';
 
 interface SearchModalProps {
@@ -137,7 +138,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
                   >
                     <div className="flex items-center gap-3">
                       <img
-                        src={recipe.image}
+                        src={resolveImageUrl(recipe.image)}
                         alt=""
                         className="w-12 h-12 rounded-lg object-cover bg-stone-100 shrink-0"
                       />
@@ -177,7 +178,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
                   >
                     <div className="flex items-center gap-3">
                       <img
-                        src={article.image}
+                        src={resolveImageUrl(article.image)}
                         alt=""
                         className="w-12 h-12 rounded-lg object-cover bg-stone-100 shrink-0"
                       />
