@@ -182,6 +182,19 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipe, onNa
           </div>
         </div>
 
+        {/* RevBid in-content ad: one placement per visible recipe page */}
+        <aside className="no-print flex flex-col items-center gap-2" aria-label="Advertisement">
+          <span className="text-[11px] uppercase tracking-wider text-[#8A8F95]">Advertisement</span>
+          <div className="w-full overflow-x-auto text-center">
+            <div
+              key={recipe.id}
+              data-placement-id="revbid-square"
+              id="revbid-square-16249"
+              style={{ minWidth: '300px', minHeight: '250px', textAlign: 'center' }}
+            />
+          </div>
+        </aside>
+
         {/* 2-Column Split: Ingredients & Nutrition on Left, Steps & Tips on Right */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           
