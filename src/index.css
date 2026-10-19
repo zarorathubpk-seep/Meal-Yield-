@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-serif: 'Playfair Display', Georgia, Cambria, serif;
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-reading: 'Lora', Georgia, serif;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #FBF9F5;
+    color: #1C1E21;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-editorial {
+    font-family: var(--font-serif);
+  }
+
+  .font-prose {
+    font-family: var(--font-reading);
+  }
+}
+
+/* Custom Print Styles for Recipes */
+@media print {
+  header, footer, nav, button, .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .recipe-container {
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+}
+
+/* 3D Perspective Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+/* Subtle card hover elevation */
+.card-hover-subtle {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .card-hover-subtle:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px -10px rgba(20, 61, 43, 0.12), 0 6px 12px -6px rgba(20, 61, 43, 0.08);
+  }
+}
+
+/* Smooth selection */
+::selection {
+  background-color: rgba(200, 90, 50, 0.2);
+  color: #143D2B;
+}

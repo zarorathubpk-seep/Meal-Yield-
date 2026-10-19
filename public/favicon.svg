@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#143D2B" />
+      <stop offset="100%" stop-color="#1E5E43" />
+    </linearGradient>
+    <linearGradient id="spiceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E27344" />
+      <stop offset="100%" stop-color="#C85A32" />
+    </linearGradient>
+  </defs>
+  <!-- Background Circle -->
+  <circle cx="32" cy="32" r="30" fill="#FDFBF7" stroke="#143D2B" stroke-width="2.5" />
+  <!-- Stylized Cloche Dome & Plant Sprout / Yield Symbol -->
+  <path d="M16 42 C16 26 48 26 48 42 Z" fill="url(#leafGrad)" />
+  <rect x="14" y="42" width="36" height="3" rx="1.5" fill="#143D2B" />
+  <!-- Handle / Grain Spike -->
+  <circle cx="32" cy="24" r="3.5" fill="url(#spiceGrad)" />
+  <!-- Sprouting Wheat/Herb Leaf -->
+  <path d="M32 24 C32 16 38 12 40 10 C38 16 34 19 32 24 Z" fill="url(#spiceGrad)" />
+  <path d="M32 24 C32 17 27 13 25 12 C27 17 30 20 32 24 Z" fill="#1E5E43" />
+</svg>

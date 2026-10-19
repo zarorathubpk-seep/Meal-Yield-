@@ -1,0 +1,6 @@
+{
+  "name": "Meal Yield",
+  "description": "Explore Flavors. Cook Better. Eat Smarter. Premium international food and lifestyle publication featuring authentic recipes, cooking guides, and nutrition insights.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
