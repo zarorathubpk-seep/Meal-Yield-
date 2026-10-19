@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { RecipeCard } from '../components/RecipeCard';
 import { PinterestModal } from '../components/PinterestModal';
+import { Tilt3D } from '../components/Tilt3D';
 import { RECIPES_DATA } from '../data/recipes';
 import { scaleIngredient, formatIngredientAmount, convertUnit } from '../utils/recipeCalculator';
 import { ActivePage, Recipe } from '../types/content';
@@ -139,15 +140,24 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipe, onNa
           </div>
         </div>
 
-        {/* Hero Food Photography Banner */}
-        <div className="relative aspect-[16/10] sm:aspect-[16/9] rounded-3xl overflow-hidden bg-stone-100 shadow-md">
-          <img
-            src={recipe.image}
-            alt={recipe.title}
-            referrerPolicy="no-referrer"
-            className="w-full h-full object-cover"
-          />
-        </div>
+        {/* Hero Food Photography Banner with 3D Depth */}
+        <Tilt3D maxTilt={5} scale={1.01} glare={true} className="rounded-3xl overflow-hidden shadow-xl">
+          <div className="relative aspect-[16/10] sm:aspect-[16/9] rounded-3xl overflow-hidden bg-stone-100" style={{ transformStyle: 'preserve-3d' }}>
+            <img
+              src={recipe.image}
+              alt={recipe.title}
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+            />
+            {/* Floating recipe metadata watermark */}
+            <div
+              className="absolute bottom-4 left-4 z-10 px-4 py-2 bg-black/60 backdrop-blur-md rounded-2xl text-white text-xs font-medium border border-white/20"
+              style={{ transform: 'translateZ(25px)' }}
+            >
+              <span>{recipe.cuisine} Culinary Tradition · {recipe.author.name}</span>
+            </div>
+          </div>
+        </Tilt3D>
 
         {/* Key Metrics Quick Ribbon */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 bg-white rounded-2xl border border-[#EBE6DF] text-center">

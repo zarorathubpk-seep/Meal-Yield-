@@ -42,9 +42,15 @@
   }
 }
 
-/* 3D Perspective Utilities */
+/* 3D Perspective & Depth Utilities */
+.perspective-800 {
+  perspective: 800px;
+}
 .perspective-1000 {
   perspective: 1000px;
+}
+.perspective-1200 {
+  perspective: 1200px;
 }
 .preserve-3d {
   transform-style: preserve-3d;
@@ -53,14 +59,44 @@
   backface-visibility: hidden;
 }
 
+.translate-z-10 {
+  transform: translateZ(10px);
+}
+.translate-z-20 {
+  transform: translateZ(20px);
+}
+.translate-z-30 {
+  transform: translateZ(30px);
+}
+
+/* Gentle 3D floating animation for hero showcase */
+@keyframes float3d {
+  0%, 100% {
+    transform: translateY(0px) rotateX(1deg) rotateY(-1deg);
+  }
+  50% {
+    transform: translateY(-8px) rotateX(-1deg) rotateY(1deg);
+  }
+}
+
+.animate-float-3d {
+  animation: float3d 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-3d {
+    animation: none !important;
+  }
+}
+
 /* Subtle card hover elevation */
 .card-hover-subtle {
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 @media (hover: hover) and (pointer: fine) {
   .card-hover-subtle:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 14px 28px -10px rgba(20, 61, 43, 0.12), 0 6px 12px -6px rgba(20, 61, 43, 0.08);
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 20px 35px -12px rgba(20, 61, 43, 0.16), 0 8px 16px -6px rgba(20, 61, 43, 0.08);
   }
 }
 

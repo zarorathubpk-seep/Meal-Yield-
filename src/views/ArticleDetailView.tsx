@@ -13,6 +13,7 @@ import {
 import { ArticleCard } from '../components/ArticleCard';
 import { RecipeCard } from '../components/RecipeCard';
 import { PinterestModal } from '../components/PinterestModal';
+import { Tilt3D } from '../components/Tilt3D';
 import { ARTICLES_DATA } from '../data/articles';
 import { RECIPES_DATA } from '../data/recipes';
 import { ActivePage, Article } from '../types/content';
@@ -112,15 +113,24 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({ article, o
           </div>
         </header>
 
-        {/* Hero Photographic Banner */}
-        <div className="relative aspect-[16/10] sm:aspect-[16/9] rounded-3xl overflow-hidden bg-stone-100 shadow-md">
-          <img
-            src={article.image}
-            alt={article.title}
-            referrerPolicy="no-referrer"
-            className="w-full h-full object-cover"
-          />
-        </div>
+        {/* Hero Photographic Banner with 3D Depth */}
+        <Tilt3D maxTilt={5} scale={1.01} glare={true} className="rounded-3xl overflow-hidden shadow-xl">
+          <div className="relative aspect-[16/10] sm:aspect-[16/9] rounded-3xl overflow-hidden bg-stone-100" style={{ transformStyle: 'preserve-3d' }}>
+            <img
+              src={article.image}
+              alt={article.title}
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+            />
+            {/* Floating article category pill */}
+            <div
+              className="absolute bottom-4 left-4 z-10 px-4 py-2 bg-black/60 backdrop-blur-md rounded-2xl text-white text-xs font-medium border border-white/20"
+              style={{ transform: 'translateZ(25px)' }}
+            >
+              <span>{article.category} · {article.subcategory}</span>
+            </div>
+          </div>
+        </Tilt3D>
 
         {/* Medical Disclaimer Banner if relevant */}
         {article.medicalDisclaimer && (

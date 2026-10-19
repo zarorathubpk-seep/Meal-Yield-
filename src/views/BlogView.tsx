@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Filter, BookOpen, Clock, ArrowRight, Sparkles } from 'lucide-react';
 import { ArticleCard } from '../components/ArticleCard';
+import { Tilt3D } from '../components/Tilt3D';
 import { ARTICLES_DATA } from '../data/articles';
 import { filterContent } from '../utils/recipeCalculator';
 import { ActivePage, Article } from '../types/content';
@@ -70,18 +71,28 @@ export const BlogView: React.FC<BlogViewProps> = ({
       {/* Featured Lead Article Marquee (if on 'All') */}
       {selectedCategory === 'All' && !searchQuery && (
         <section className="bg-white rounded-3xl border border-[#EBE6DF] overflow-hidden shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-6 sm:p-8">
-          <div className="lg:col-span-7 aspect-[16/10] rounded-2xl overflow-hidden bg-stone-100 relative group cursor-pointer"
-               onClick={() => onNavigate({ name: 'article', slug: featuredStory.slug })}>
-            <img
-              src={featuredStory.image}
-              alt={featuredStory.title}
-              referrerPolicy="no-referrer"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-            <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-[#143D2B]">
-              Featured Editorial Cover
-            </div>
+          <div className="lg:col-span-7">
+            <Tilt3D maxTilt={6} scale={1.02} glare={true} className="rounded-2xl overflow-hidden shadow-md">
+              <div
+                className="aspect-[16/10] rounded-2xl overflow-hidden bg-stone-100 relative group cursor-pointer"
+                onClick={() => onNavigate({ name: 'article', slug: featuredStory.slug })}
+                style={{ transformStyle: 'preserve-3d' }}
+              >
+                <img
+                  src={featuredStory.image}
+                  alt={featuredStory.title}
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                <div
+                  className="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-[#143D2B] shadow-md"
+                  style={{ transform: 'translateZ(20px)' }}
+                >
+                  Featured Editorial Cover
+                </div>
+              </div>
+            </Tilt3D>
           </div>
 
           <div className="lg:col-span-5 flex flex-col justify-between py-2">

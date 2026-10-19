@@ -3,6 +3,7 @@ import { ArrowRight, Compass, Flame, HeartPulse, Sparkles, Youtube, CheckCircle2
 import { HeroCarousel } from '../components/HeroCarousel';
 import { RecipeCard } from '../components/RecipeCard';
 import { ArticleCard } from '../components/ArticleCard';
+import { Tilt3D } from '../components/Tilt3D';
 import { RECIPES_DATA } from '../data/recipes';
 import { ARTICLES_DATA } from '../data/articles';
 import { COOKING_VIDEOS_DATA } from '../data/videos';
@@ -91,39 +92,41 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onSelectVideo })
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {cuisineCards.map((c) => (
-              <div
-                key={c.name}
-                onClick={() => onNavigate({ name: 'recipes-directory', cuisine: c.name })}
-                className="group cursor-pointer bg-white rounded-2xl border border-[#EBE6DF] overflow-hidden card-hover-subtle p-5 flex flex-col justify-between"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-xl overflow-hidden bg-stone-100 shrink-0 relative">
-                    <img
-                      src={c.image}
-                      alt={c.name}
-                      referrerPolicy="no-referrer"
-                      loading="lazy"
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg" aria-hidden="true">{c.flag}</span>
-                      <h3 className="font-editorial text-xl font-bold text-[#143D2B] group-hover:text-[#C85A32] transition-colors">
-                        {c.name} Food
-                      </h3>
+              <Tilt3D key={c.name} maxTilt={8} scale={1.03} glare={true} className="h-full">
+                <div
+                  onClick={() => onNavigate({ name: 'recipes-directory', cuisine: c.name })}
+                  className="group cursor-pointer bg-white rounded-3xl border border-[#EBE6DF] overflow-hidden shadow-sm hover:shadow-xl p-5 flex flex-col justify-between h-full transition-shadow duration-300"
+                  style={{ transformStyle: 'preserve-3d' }}
+                >
+                  <div className="flex items-center gap-4" style={{ transform: 'translateZ(15px)' }}>
+                    <div className="w-16 h-16 rounded-2xl overflow-hidden bg-stone-100 shrink-0 relative shadow-inner">
+                      <img
+                        src={c.image}
+                        alt={c.name}
+                        referrerPolicy="no-referrer"
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-115 transition-transform duration-700"
+                      />
                     </div>
-                    <span className="text-xs text-[#8A8F95] font-mono mt-0.5 block">{c.count}</span>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl" aria-hidden="true">{c.flag}</span>
+                        <h3 className="font-editorial text-xl font-bold text-[#143D2B] group-hover:text-[#C85A32] transition-colors">
+                          {c.name} Food
+                        </h3>
+                      </div>
+                      <span className="text-xs text-[#8A8F95] font-mono mt-0.5 block">{c.count}</span>
+                    </div>
+                  </div>
+                  <p className="mt-4 text-xs text-[#4B5563] leading-relaxed" style={{ transform: 'translateZ(10px)' }}>
+                    {c.desc}
+                  </p>
+                  <div className="mt-4 pt-3 border-t border-[#F4EFE6] flex items-center justify-between text-xs font-semibold text-[#143D2B] group-hover:text-[#C85A32]" style={{ transform: 'translateZ(18px)' }}>
+                    <span>Explore Cuisine</span>
+                    <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
                   </div>
                 </div>
-                <p className="mt-4 text-xs text-[#4B5563] leading-relaxed">
-                  {c.desc}
-                </p>
-                <div className="mt-4 pt-3 border-t border-[#F4EFE6] flex items-center justify-between text-xs font-semibold text-[#143D2B] group-hover:text-[#C85A32]">
-                  <span>Explore Cuisine</span>
-                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-                </div>
-              </div>
+              </Tilt3D>
             ))}
           </div>
         </div>
@@ -315,44 +318,55 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onSelectVideo })
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {COOKING_VIDEOS_DATA.slice(0, 3).map((video) => (
-            <div
-              key={video.id}
-              onClick={() => onSelectVideo(video)}
-              className="group cursor-pointer bg-white rounded-2xl border border-[#EBE6DF] overflow-hidden card-hover-subtle flex flex-col"
-            >
-              <div className="relative aspect-video bg-black overflow-hidden">
-                <img
-                  src={video.thumbnail}
-                  alt={video.title}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90"
-                />
-                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/15 transition-colors flex items-center justify-center">
-                  <div className="w-12 h-12 rounded-full bg-red-600 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current ml-0.5">
-                      <polygon points="5 3 19 12 5 21 5 3" />
-                    </svg>
+            <Tilt3D key={video.id} maxTilt={8} scale={1.03} glare={true} className="h-full">
+              <div
+                onClick={() => onSelectVideo(video)}
+                className="group cursor-pointer bg-white rounded-3xl border border-[#EBE6DF] overflow-hidden shadow-sm hover:shadow-xl flex flex-col h-full transition-shadow duration-300"
+                style={{ transformStyle: 'preserve-3d' }}
+              >
+                <div
+                  className="relative aspect-video bg-black overflow-hidden"
+                  style={{ transform: 'translateZ(12px)', transformStyle: 'preserve-3d' }}
+                >
+                  <img
+                    src={video.thumbnail}
+                    alt={video.title}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90"
+                  />
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                    <div
+                      className="w-14 h-14 rounded-full bg-red-600 text-white flex items-center justify-center shadow-xl group-hover:scale-115 transition-transform"
+                      style={{ transform: 'translateZ(30px)' }}
+                    >
+                      <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current ml-0.5">
+                        <polygon points="5 3 19 12 5 21 5 3" />
+                      </svg>
+                    </div>
+                  </div>
+                  <span
+                    className="absolute bottom-2 right-2 px-2 py-0.5 bg-black/80 rounded text-[10px] font-mono text-white"
+                    style={{ transform: 'translateZ(20px)' }}
+                  >
+                    {video.duration}
+                  </span>
+                </div>
+                <div className="p-5 flex flex-col justify-between flex-1" style={{ transform: 'translateZ(18px)' }}>
+                  <div>
+                    <span className="text-[11px] font-semibold text-[#C85A32] uppercase tracking-wider block mb-1">
+                      {video.cuisine}
+                    </span>
+                    <h4 className="font-editorial text-base font-bold text-[#143D2B] group-hover:text-[#C85A32] transition-colors line-clamp-2">
+                      {video.title}
+                    </h4>
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-[#F0EBE1] flex items-center justify-between text-xs text-[#6B7280]">
+                    <span>{video.creator}</span>
+                    <span className="font-semibold text-red-600 group-hover:underline">Watch Video →</span>
                   </div>
                 </div>
-                <span className="absolute bottom-2 right-2 px-2 py-0.5 bg-black/80 rounded text-[10px] font-mono text-white">
-                  {video.duration}
-                </span>
               </div>
-              <div className="p-4 flex flex-col justify-between flex-1">
-                <div>
-                  <span className="text-[11px] font-semibold text-[#C85A32] uppercase tracking-wider block mb-1">
-                    {video.cuisine}
-                  </span>
-                  <h4 className="font-editorial text-base font-bold text-[#143D2B] group-hover:text-[#C85A32] transition-colors line-clamp-2">
-                    {video.title}
-                  </h4>
-                </div>
-                <div className="mt-3 pt-3 border-t border-[#F0EBE1] flex items-center justify-between text-xs text-[#6B7280]">
-                  <span>{video.creator}</span>
-                  <span className="font-semibold text-[#143D2B] group-hover:text-[#C85A32]">Watch Video →</span>
-                </div>
-              </div>
-            </div>
+            </Tilt3D>
           ))}
         </div>
       </section>

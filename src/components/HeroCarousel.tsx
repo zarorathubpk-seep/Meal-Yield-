@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, ArrowRight, Clock, Users, Sparkles } from 'lucide-react';
+import { Tilt3D } from './Tilt3D';
 import { ActivePage } from '../types/content';
 
 interface HeroCarouselProps {
@@ -205,78 +206,107 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onNavigate }) => {
             onTouchEnd={handleTouchEnd}
           >
             {/* 3D Stage Container */}
-            <div className="relative mx-auto max-w-xl perspective-1000">
+            <div className="relative mx-auto max-w-xl perspective-1200">
               
-              {/* Background Depth Card 2 (Layer 3) */}
+              {/* Background Depth Card 2 (Layer 3 - Deep Parallax) */}
               <div 
-                className="hidden sm:block absolute inset-0 bg-[#E8E1D5] rounded-3xl transform scale-90 translate-y-6 opacity-40 shadow-sm transition-transform duration-500"
+                className="hidden sm:block absolute inset-0 bg-[#E8E1D5] rounded-3xl transform scale-90 translate-y-8 -translate-z-20 opacity-40 shadow-sm transition-transform duration-700 pointer-events-none"
                 aria-hidden="true"
+                style={{
+                  transform: 'scale(0.88) translateY(24px) translateZ(-60px) rotateX(2deg)',
+                }}
               />
 
-              {/* Background Depth Card 1 (Layer 2) */}
+              {/* Background Depth Card 1 (Layer 2 - Mid Parallax) */}
               <div 
-                className="hidden sm:block absolute inset-0 bg-[#F2EDE3] border border-[#DDD5C7] rounded-3xl transform scale-95 translate-y-3 opacity-70 shadow transition-transform duration-500"
+                className="hidden sm:block absolute inset-0 bg-[#F2EDE3] border border-[#DDD5C7] rounded-3xl transform scale-95 translate-y-4 -translate-z-10 opacity-75 shadow transition-transform duration-700 pointer-events-none"
                 aria-hidden="true"
+                style={{
+                  transform: 'scale(0.94) translateY(12px) translateZ(-30px) rotateX(1deg)',
+                }}
               />
 
-              {/* Foreground Active 3D Food Card (Layer 1) */}
-              <div className="relative bg-white rounded-3xl p-3 sm:p-4 shadow-xl border border-[#EBE6DF] transition-all duration-500 preserve-3d">
-                {/* Main Photograph Frame */}
-                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-[#F4EFE6] shadow-inner group">
-                  <img
-                    src={currentItem.image}
-                    alt={currentItem.title}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                  />
-                  
-                  {/* Subtle vignette scrim */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10 pointer-events-none" />
-
-                  {/* Top Floating Badge */}
-                  <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
-                    <span className="px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-xs font-semibold text-[#143D2B] shadow-sm tracking-wide">
-                      {currentItem.country}
-                    </span>
-                    <span className="px-3 py-1 bg-[#143D2B]/85 backdrop-blur-md rounded-full text-xs font-medium text-white shadow-sm">
-                      {currentItem.cuisine}
-                    </span>
-                  </div>
-
-                  {/* Bottom Text Over Photo */}
-                  <div className="absolute bottom-4 left-4 right-4 z-10 text-white">
-                    <h2 className="font-editorial text-2xl sm:text-3xl font-bold tracking-tight drop-shadow-md">
-                      {currentItem.title}
-                    </h2>
-                    <p className="text-xs sm:text-sm text-stone-200 mt-1 line-clamp-2 drop-shadow">
-                      {currentItem.description}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Card Info Footer Strip */}
-                <div className="mt-4 px-2 py-2 flex items-center justify-between">
-                  <div className="flex items-center gap-4 text-xs font-medium text-[#52575C]">
-                    <div className="flex items-center gap-1.5">
-                      <Clock className="w-4 h-4 text-[#C85A32]" />
-                      <span>{currentItem.cookTime}</span>
-                    </div>
-                    <span aria-hidden="true" className="text-[#D6CEBE]">·</span>
-                    <div className="flex items-center gap-1.5">
-                      <Users className="w-4 h-4 text-[#C85A32]" />
-                      <span>{currentItem.servings}</span>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => onNavigate({ name: 'recipe', slug: currentItem.slug })}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-[#143D2B] bg-[#F8F5EE] hover:bg-[#143D2B] hover:text-white rounded-lg transition-colors duration-200"
+              {/* Foreground Active Interactive 3D Food Card (Layer 1) */}
+              <Tilt3D
+                maxTilt={9}
+                scale={1.02}
+                glare={true}
+                perspective={1200}
+                className="relative z-10"
+              >
+                <div 
+                  className="relative bg-white rounded-3xl p-3 sm:p-4 shadow-2xl border border-[#EBE6DF] transition-all duration-500 preserve-3d animate-float-3d"
+                  style={{ transformStyle: 'preserve-3d' }}
+                >
+                  {/* Main Photograph Frame with 3D Pop */}
+                  <div 
+                    className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-[#F4EFE6] shadow-inner group"
+                    style={{ transform: 'translateZ(18px)', transformStyle: 'preserve-3d' }}
                   >
-                    <span>View Recipe</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
+                    <img
+                      src={currentItem.image}
+                      alt={currentItem.title}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                    />
+                    
+                    {/* Multi-tier gradient scrim for depth */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-black/10 pointer-events-none" />
+
+                    {/* Top Floating Badges (Floating High in 3D Space) */}
+                    <div 
+                      className="absolute top-4 left-4 z-20 flex items-center gap-2 transition-transform duration-300"
+                      style={{ transform: 'translateZ(40px)' }}
+                    >
+                      <span className="px-3 py-1 bg-white/95 backdrop-blur-md rounded-full text-xs font-semibold text-[#143D2B] shadow-lg tracking-wide border border-white/40">
+                        {currentItem.country}
+                      </span>
+                      <span className="px-3 py-1 bg-[#143D2B]/90 backdrop-blur-md rounded-full text-xs font-medium text-white shadow-lg border border-white/20">
+                        {currentItem.cuisine}
+                      </span>
+                    </div>
+
+                    {/* Bottom Text Over Photo (Floating in 3D Space) */}
+                    <div 
+                      className="absolute bottom-4 left-4 right-4 z-20 text-white"
+                      style={{ transform: 'translateZ(35px)' }}
+                    >
+                      <h2 className="font-editorial text-2xl sm:text-3xl font-bold tracking-tight drop-shadow-lg text-balance">
+                        {currentItem.title}
+                      </h2>
+                      <p className="text-xs sm:text-sm text-stone-200 mt-1.5 line-clamp-2 drop-shadow">
+                        {currentItem.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Card Info Footer Strip (Layered at translateZ 20px) */}
+                  <div 
+                    className="mt-4 px-2 py-2 flex items-center justify-between"
+                    style={{ transform: 'translateZ(22px)' }}
+                  >
+                    <div className="flex items-center gap-4 text-xs font-medium text-[#52575C]">
+                      <div className="flex items-center gap-1.5">
+                        <Clock className="w-4 h-4 text-[#C85A32]" />
+                        <span>{currentItem.cookTime}</span>
+                      </div>
+                      <span aria-hidden="true" className="text-[#D6CEBE]">·</span>
+                      <div className="flex items-center gap-1.5">
+                        <Users className="w-4 h-4 text-[#C85A32]" />
+                        <span>{currentItem.servings}</span>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => onNavigate({ name: 'recipe', slug: currentItem.slug })}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#143D2B] hover:bg-[#1E5E43] rounded-xl shadow-md transition-all duration-200 hover:scale-105"
+                    >
+                      <span>View Recipe</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </Tilt3D>
 
               {/* Prev / Next Tactile Controls */}
               <div className="flex items-center justify-between mt-6 px-2">
@@ -284,14 +314,14 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onNavigate }) => {
                   <button
                     onClick={handlePrev}
                     aria-label="Previous showcase recipe"
-                    className="w-10 h-10 rounded-full bg-white border border-[#EBE6DF] hover:border-[#143D2B] hover:text-[#143D2B] text-[#52575C] shadow-sm flex items-center justify-center transition-all hover:scale-105 active:scale-95"
+                    className="w-10 h-10 rounded-full bg-white border border-[#EBE6DF] hover:border-[#143D2B] hover:text-[#143D2B] text-[#52575C] shadow-sm flex items-center justify-center transition-all hover:scale-110 active:scale-95"
                   >
                     <ChevronLeft className="w-5 h-5" />
                   </button>
                   <button
                     onClick={handleNext}
                     aria-label="Next showcase recipe"
-                    className="w-10 h-10 rounded-full bg-white border border-[#EBE6DF] hover:border-[#143D2B] hover:text-[#143D2B] text-[#52575C] shadow-sm flex items-center justify-center transition-all hover:scale-105 active:scale-95"
+                    className="w-10 h-10 rounded-full bg-white border border-[#EBE6DF] hover:border-[#143D2B] hover:text-[#143D2B] text-[#52575C] shadow-sm flex items-center justify-center transition-all hover:scale-110 active:scale-95"
                   >
                     <ChevronRight className="w-5 h-5" />
                   </button>
