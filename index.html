@@ -1,7 +1,18 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <script type="text/javascript" src="//prebid.revbid.net/21993/revbid.js" async></script>
+    <!-- RevBid Publisher Script (loaded on mealyield.com production domain) -->
+    <script type="text/javascript" src="//prebid.revbid.net/21993/revbid.js" async crossorigin="anonymous" onerror="window.__revbid_unavailable=true;"></script>
+    <script>
+      // Prevent cross-origin script load errors (e.g., from ad network CDNs or prebid endpoints) from bubbling up as unhandled window error events
+      window.addEventListener('error', function(e) {
+        if (e && (e.message === 'Script error.' || (!e.filename && !e.lineno))) {
+          // Cross-origin script error from external ad network, suppress to keep app execution pristine
+          e.preventDefault && e.preventDefault();
+          return true;
+        }
+      }, true);
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Meal Yield – Explore Flavors. Cook Better. Eat Smarter.</title>

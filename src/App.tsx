@@ -14,7 +14,7 @@ import { ContactView } from './views/ContactView';
 import { LegalView } from './views/LegalView';
 import { RECIPES_DATA } from './data/recipes';
 import { ARTICLES_DATA } from './data/articles';
-import { GeminiChatbot } from './components/GeminiChatbot';
+import { Interactive3DChef } from './components/Interactive3DChef';
 import { ActivePage, CookingVideo } from './types/content';
 
 export default function App() {
@@ -273,8 +273,11 @@ export default function App() {
         onClose={() => setActiveVideo(null)}
       />
 
-      {/* Gemini AI Multi-Turn Sous Chef Chatbot */}
-      <GeminiChatbot currentRecipe={currentRecipe} />
+      {/* Premium Interactive 3D AI Chef with Voice, Actions, Stories & Gemini Chat */}
+      <Interactive3DChef
+        currentRecipe={currentRecipe}
+        activePageName={activePage.name}
+      />
 
     </div>
   );

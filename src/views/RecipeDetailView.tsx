@@ -17,6 +17,7 @@ import { RecipeCard } from '../components/RecipeCard';
 import { PinterestModal } from '../components/PinterestModal';
 import { Tilt3D } from '../components/Tilt3D';
 import { RevBidSquareAd } from '../components/RevBidSquareAd';
+import { StoryAudioPlayer } from '../components/StoryAudioPlayer';
 import { RECIPES_DATA } from '../data/recipes';
 import { scaleIngredient, formatIngredientAmount, convertUnit } from '../utils/recipeCalculator';
 import { resolveImageUrl } from '../utils/imageHelper';
@@ -160,6 +161,18 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipe, onNa
 
           <div className="flex items-center gap-2">
             <button
+              onClick={() => {
+                const storyEvent = new CustomEvent('hear_recipe_story', { detail: { slug: recipe.slug } });
+                window.dispatchEvent(storyEvent);
+              }}
+              className="px-3 py-1.5 bg-[#C85A32] hover:bg-[#a84723] text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-all hover:scale-105"
+              title="Listen to 3D Chef narrate the historical and cultural story of this dish"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-200" />
+              <span>Hear My Story</span>
+            </button>
+
+            <button
               onClick={() => setPinterestOpen(true)}
               className="px-3 py-1.5 bg-[#BD081C] hover:bg-[#A30718] text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-all"
             >
@@ -184,6 +197,9 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipe, onNa
             </button>
           </div>
         </div>
+
+        {/* Dedicated Culinary Heritage Story Audio Player */}
+        <StoryAudioPlayer recipe={recipe} />
 
         {/* Hero Food Photography Banner with 3D Depth */}
         <Tilt3D maxTilt={5} scale={1.01} glare={true} className="rounded-3xl overflow-hidden shadow-xl">

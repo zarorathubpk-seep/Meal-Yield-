@@ -148,7 +148,7 @@ export const ARTICLES_GUIDES: Article[] = [
     category: 'Cooking Tips',
     subcategory: 'Rice & Grains Mastery',
     cuisine: 'Pakistani',
-    image: '/images/fluffy-basmati-rice.jpg',
+    image: '/images/basmati-rice-washing-science.jpg',
     featured: false,
     publishedDate: 'October 22, 2026',
     readTimeMinutes: 6,
@@ -161,7 +161,7 @@ export const ARTICLES_GUIDES: Article[] = [
     pinterest: {
       pinTitle: 'How to Cook Perfect Fluffy Basmati Rice | Meal Yield',
       pinDescription: 'The step-by-step culinary science to separate, extra-long basmati rice grains. Rinsing, soaking, and the exact water ratio.',
-      pinImage: '/images/fluffy-basmati-rice.jpg',
+      pinImage: '/images/basmati-rice-washing-science.jpg',
       aspectRatio: '2:3',
       keywords: ['basmati rice', 'fluffy rice', 'how to cook rice', 'rice recipe', 'cooking tips'],
     },
