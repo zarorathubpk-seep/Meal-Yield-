@@ -16,6 +16,7 @@ import {
 import { RecipeCard } from '../components/RecipeCard';
 import { PinterestModal } from '../components/PinterestModal';
 import { Tilt3D } from '../components/Tilt3D';
+import { RevBidSquareAd } from '../components/RevBidSquareAd';
 import { RECIPES_DATA } from '../data/recipes';
 import { scaleIngredient, formatIngredientAmount, convertUnit } from '../utils/recipeCalculator';
 import { resolveImageUrl } from '../utils/imageHelper';
@@ -56,9 +57,52 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipe, onNa
 
   const relatedRecipes = RECIPES_DATA.filter((r) => r.id !== recipe.id).slice(0, 3);
 
+  const schemaData = {
+    '@context': 'https://schema.org',
+    '@type': 'Recipe',
+    name: recipe.title,
+    headline: recipe.subtitle,
+    description: recipe.description,
+    image: [`https://mealyield.com${recipe.image}`],
+    author: {
+      '@type': 'Organization',
+      name: recipe.author.name || 'Meal Yield Editorial Team',
+      url: 'https://mealyield.com/about',
+    },
+    datePublished: recipe.publishedDate,
+    prepTime: `PT${recipe.prepTimeMinutes}M`,
+    cookTime: `PT${recipe.cookTimeMinutes}M`,
+    totalTime: `PT${recipe.prepTimeMinutes + recipe.cookTimeMinutes}M`,
+    recipeYield: `${recipe.servings} servings`,
+    recipeCategory: recipe.category,
+    recipeCuisine: recipe.cuisine,
+    keywords: recipe.pinterest.keywords.join(', '),
+    recipeIngredient: recipe.ingredients.map(
+      (ing) => `${ing.amount} ${ing.unit} ${ing.name}${ing.notes ? `, ${ing.notes}` : ''}`
+    ),
+    recipeInstructions: recipe.instructions.map((step) => ({
+      '@type': 'HowToStep',
+      text: step.instruction,
+      name: `Step ${step.stepNumber}`,
+    })),
+    ...(recipe.nutrition ? {
+      nutrition: {
+        '@type': 'NutritionInformation',
+        calories: `${recipe.nutrition.calories} calories`,
+        proteinContent: `${recipe.nutrition.proteinG}g`,
+        carbohydrateContent: `${recipe.nutrition.carbsG}g`,
+        fatContent: `${recipe.nutrition.fatG}g`,
+        fiberContent: recipe.nutrition.fiberG ? `${recipe.nutrition.fiberG}g` : undefined,
+      }
+    } : {}),
+  };
+
   return (
     <div className="pb-24">
-      
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+      />
       {/* Editorial Breadcrumbs */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4 no-print">
         <nav className="flex items-center gap-2 text-xs text-[#6B7280]" aria-label="Breadcrumb">
@@ -182,18 +226,46 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipe, onNa
           </div>
         </div>
 
-        {/* RevBid in-content ad: one placement per visible recipe page */}
-        <aside className="no-print flex flex-col items-center gap-2" aria-label="Advertisement">
-          <span className="text-[11px] uppercase tracking-wider text-[#8A8F95]">Advertisement</span>
-          <div className="w-full overflow-x-auto text-center">
-            <div
-              key={recipe.id}
-              data-placement-id="revbid-square"
-              id="revbid-square-16249"
-              style={{ minWidth: '300px', minHeight: '250px', textAlign: 'center' }}
-            />
+        {/* Editorial & Verification Status Note */}
+        {(recipe.verificationStatus || recipe.sourceCredits || (recipe.dietaryNotes && recipe.dietaryNotes.length > 0)) && (
+          <div className="p-4 bg-[#F8F5EE] rounded-2xl border border-[#E3DC CE] text-xs text-[#52575C] flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className={`px-2.5 py-1 rounded-full font-semibold uppercase text-[10px] tracking-wider ${
+                recipe.verificationStatus === 'Kitchen Tested'
+                  ? 'bg-emerald-100 text-emerald-800'
+                  : recipe.verificationStatus === 'Culinary Adaptation'
+                  ? 'bg-amber-100 text-amber-900'
+                  : 'bg-stone-200 text-stone-800'
+              }`}>
+                {recipe.verificationStatus || 'Culinary Development'}
+              </span>
+              {recipe.sourceCredits && (
+                <span>
+                  Culinary Reference:{' '}
+                  {recipe.sourceUrl ? (
+                    <a href={recipe.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline hover:text-[#143D2B]">
+                      {recipe.sourceCredits}
+                    </a>
+                  ) : (
+                    <span>{recipe.sourceCredits}</span>
+                  )}
+                </span>
+              )}
+            </div>
+            {recipe.dietaryNotes && recipe.dietaryNotes.length > 0 && (
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {recipe.dietaryNotes.map((d, i) => (
+                  <span key={i} className="px-2 py-0.5 bg-white border border-[#DDD5C7] rounded-md text-[11px] text-[#2E3338]">
+                    {d}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
-        </aside>
+        )}
+
+        {/* Official RevBid 300x250 In-Content Advertisement */}
+        <RevBidSquareAd />
 
         {/* 2-Column Split: Ingredients & Nutrition on Left, Steps & Tips on Right */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
@@ -288,39 +360,41 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipe, onNa
             </div>
 
             {/* Nutrition Information Box */}
-            <div className="bg-[#FDFBF7] rounded-3xl border border-[#EBE6DF] p-6 shadow-sm">
-              <h4 className="font-editorial text-lg font-bold text-[#143D2B] mb-1">
-                Estimated Nutrition Facts
-              </h4>
-              <p className="text-[11px] text-[#8A8F95] mb-4">Per single serving portion</p>
+            {recipe.nutrition && (
+              <div className="bg-[#FDFBF7] rounded-3xl border border-[#EBE6DF] p-6 shadow-sm">
+                <h4 className="font-editorial text-lg font-bold text-[#143D2B] mb-1">
+                  Estimated Nutrition Facts
+                </h4>
+                <p className="text-[11px] text-[#8A8F95] mb-4">Per single serving portion (nutritional estimate)</p>
 
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="p-3 bg-white rounded-xl border border-[#EBE6DF]">
-                  <span className="text-[#8A8F95] block mb-0.5">Calories</span>
-                  <span className="font-editorial text-lg font-bold text-[#143D2B] tabular-nums">
-                    {recipe.nutrition.calories} kcal
-                  </span>
-                </div>
-                <div className="p-3 bg-white rounded-xl border border-[#EBE6DF]">
-                  <span className="text-[#8A8F95] block mb-0.5">Protein</span>
-                  <span className="font-editorial text-lg font-bold text-[#143D2B] tabular-nums">
-                    {recipe.nutrition.proteinG}g
-                  </span>
-                </div>
-                <div className="p-3 bg-white rounded-xl border border-[#EBE6DF]">
-                  <span className="text-[#8A8F95] block mb-0.5">Carbohydrates</span>
-                  <span className="font-editorial text-lg font-bold text-[#143D2B] tabular-nums">
-                    {recipe.nutrition.carbsG}g
-                  </span>
-                </div>
-                <div className="p-3 bg-white rounded-xl border border-[#EBE6DF]">
-                  <span className="text-[#8A8F95] block mb-0.5">Total Fat</span>
-                  <span className="font-editorial text-lg font-bold text-[#143D2B] tabular-nums">
-                    {recipe.nutrition.fatG}g
-                  </span>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="p-3 bg-white rounded-xl border border-[#EBE6DF]">
+                    <span className="text-[#8A8F95] block mb-0.5">Calories</span>
+                    <span className="font-editorial text-lg font-bold text-[#143D2B] tabular-nums">
+                      {recipe.nutrition.calories} kcal
+                    </span>
+                  </div>
+                  <div className="p-3 bg-white rounded-xl border border-[#EBE6DF]">
+                    <span className="text-[#8A8F95] block mb-0.5">Protein</span>
+                    <span className="font-editorial text-lg font-bold text-[#143D2B] tabular-nums">
+                      {recipe.nutrition.proteinG}g
+                    </span>
+                  </div>
+                  <div className="p-3 bg-white rounded-xl border border-[#EBE6DF]">
+                    <span className="text-[#8A8F95] block mb-0.5">Carbohydrates</span>
+                    <span className="font-editorial text-lg font-bold text-[#143D2B] tabular-nums">
+                      {recipe.nutrition.carbsG}g
+                    </span>
+                  </div>
+                  <div className="p-3 bg-white rounded-xl border border-[#EBE6DF]">
+                    <span className="text-[#8A8F95] block mb-0.5">Total Fat</span>
+                    <span className="font-editorial text-lg font-bold text-[#143D2B] tabular-nums">
+                      {recipe.nutrition.fatG}g
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
           </div>
 

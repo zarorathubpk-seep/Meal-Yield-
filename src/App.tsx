@@ -14,6 +14,7 @@ import { ContactView } from './views/ContactView';
 import { LegalView } from './views/LegalView';
 import { RECIPES_DATA } from './data/recipes';
 import { ARTICLES_DATA } from './data/articles';
+import { GeminiChatbot } from './components/GeminiChatbot';
 import { ActivePage, CookingVideo } from './types/content';
 
 export default function App() {
@@ -236,6 +237,11 @@ export default function App() {
     }
   };
 
+  const currentRecipe =
+    activePage.name === 'recipe' && activePage.slug
+      ? RECIPES_DATA.find((r) => r.slug === activePage.slug) || null
+      : null;
+
   return (
     <div className="min-h-screen flex flex-col bg-[#FBF9F5] text-[#1C1E21] selection:bg-[#C85A32]/20 selection:text-[#143D2B]">
       
@@ -266,6 +272,9 @@ export default function App() {
         video={activeVideo}
         onClose={() => setActiveVideo(null)}
       />
+
+      {/* Gemini AI Multi-Turn Sous Chef Chatbot */}
+      <GeminiChatbot currentRecipe={currentRecipe} />
 
     </div>
   );

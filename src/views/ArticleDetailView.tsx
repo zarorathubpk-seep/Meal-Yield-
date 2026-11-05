@@ -14,6 +14,7 @@ import { ArticleCard } from '../components/ArticleCard';
 import { RecipeCard } from '../components/RecipeCard';
 import { PinterestModal } from '../components/PinterestModal';
 import { Tilt3D } from '../components/Tilt3D';
+import { RevBidSquareAd } from '../components/RevBidSquareAd';
 import { ARTICLES_DATA } from '../data/articles';
 import { RECIPES_DATA } from '../data/recipes';
 import { resolveImageUrl } from '../utils/imageHelper';
@@ -41,9 +42,37 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({ article, o
     ? RECIPES_DATA.find((r) => r.slug === article.linkedRecipeSlug)
     : null;
 
+  const schemaData = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: article.title,
+    description: article.excerpt,
+    image: [`https://mealyield.com${article.image}`],
+    datePublished: article.publishedDate,
+    author: {
+      '@type': 'Organization',
+      name: article.author.name || 'Meal Yield Editorial Team',
+      url: 'https://mealyield.com/about',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Meal Yield',
+      url: 'https://mealyield.com',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://mealyield.com/images/meal-yield-chef-emblem.png',
+      },
+    },
+    articleSection: article.category,
+    keywords: article.tags.join(', '),
+  };
+
   return (
     <div className="pb-24">
-      
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+      />
       {/* Breadcrumb Navigation */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
         <nav className="flex items-center gap-2 text-xs text-[#6B7280]" aria-label="Breadcrumb">
@@ -152,6 +181,9 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({ article, o
             {article.excerpt}
           </p>
         </div>
+
+        {/* Official RevBid 300x250 In-Content Advertisement */}
+        <RevBidSquareAd />
 
         {/* Main Body Sections */}
         <div className="space-y-10 font-prose text-base text-[#2E3338] leading-relaxed max-w-none">

@@ -1,6 +1,7 @@
 import { Article } from '../types/content';
+import { ARTICLES_GUIDES } from './articlesGuides';
 
-export const ARTICLES_DATA: Article[] = [
+const ARTICLES_CORE: Article[] = [
   // --- Category 1: Desi Food & Traditional Recipes ---
   {
     id: 'art-pakistani-karahi',
@@ -16,8 +17,9 @@ export const ARTICLES_DATA: Article[] = [
     publishedDate: 'October 12, 2026',
     readTimeMinutes: 6,
     author: {
-      name: 'Chef Tariq Mansoor',
-      role: 'South Asian Culinary Historian',
+      name: 'Meal Yield Editorial Team',
+      role: 'South Asian Culinary Desk',
+      bio: 'Tested and verified by the Meal Yield kitchen team. We review every ratio, cooking time, and yield to ensure reliable results at home.',
     },
     tags: ['Pakistani Food', 'Chicken Karahi', 'Desi Cooking', 'Street Food', 'Punjab'],
     linkedRecipeSlug: 'pakistani-chicken-karahi',
@@ -71,8 +73,9 @@ export const ARTICLES_DATA: Article[] = [
     publishedDate: 'October 15, 2026',
     readTimeMinutes: 7,
     author: {
-      name: 'Chef Tariq Mansoor',
-      role: 'South Asian Culinary Historian',
+      name: 'Meal Yield Editorial Team',
+      role: 'South Asian Culinary Desk',
+      bio: 'Tested and verified by the Meal Yield kitchen team. We review every ratio, cooking time, and yield to ensure reliable results at home.',
     },
     tags: ['Biryani', 'Basmati Rice', 'Mughlai Cuisine', 'Dum Cooking', 'Pakistani Food'],
     linkedRecipeSlug: 'traditional-chicken-biryani',
@@ -114,8 +117,9 @@ export const ARTICLES_DATA: Article[] = [
     publishedDate: 'October 16, 2026',
     readTimeMinutes: 5,
     author: {
-      name: 'Chef Tariq Mansoor',
-      role: 'South Asian Culinary Historian',
+      name: 'Meal Yield Editorial Team',
+      role: 'South Asian Culinary Desk',
+      bio: 'Tested and verified by the Meal Yield kitchen team. We review every ratio, cooking time, and yield to ensure reliable results at home.',
     },
     tags: ['Nihari', 'Beef Stew', 'Karachi Food', 'Slow Cooking', 'Pakistani Breakfast'],
     sections: [
@@ -149,8 +153,9 @@ export const ARTICLES_DATA: Article[] = [
     publishedDate: 'October 17, 2026',
     readTimeMinutes: 5,
     author: {
-      name: 'Ananya Sharma',
-      role: 'North Indian Regional Cuisine Specialist',
+      name: 'Meal Yield Editorial Team',
+      role: 'Indian Regional Cuisine Desk',
+      bio: 'Tested and verified by the Meal Yield kitchen team. We review every ratio, cooking time, and yield to ensure reliable results at home.',
     },
     tags: ['Butter Chicken', 'Murgh Makhani', 'Indian Food', 'Curry', 'Delhi'],
     sections: [
@@ -184,8 +189,9 @@ export const ARTICLES_DATA: Article[] = [
     publishedDate: 'October 18, 2026',
     readTimeMinutes: 6,
     author: {
-      name: 'Tanvir Hossain',
-      role: 'Bengal Heritage Food Chronicler',
+      name: 'Meal Yield Editorial Team',
+      role: 'Bengal Culinary Desk',
+      bio: 'Tested and verified by the Meal Yield kitchen team. We review every ratio, cooking time, and yield to ensure reliable results at home.',
     },
     tags: ['Bangladeshi Food', 'Kacchi Biryani', 'Dhaka', 'Old Town', 'Chinigura Rice'],
     sections: [
@@ -221,8 +227,9 @@ export const ARTICLES_DATA: Article[] = [
     publishedDate: 'October 16, 2026',
     readTimeMinutes: 5,
     author: {
-      name: 'Marcus Vance',
-      role: 'American Diner & Grill Historian',
+      name: 'Meal Yield Editorial Team',
+      role: 'Culinary Technique Desk',
+      bio: 'Tested and verified by the Meal Yield kitchen team. We review every ratio, cooking time, and yield to ensure reliable results at home.',
     },
     tags: ['Cheeseburger', 'Smash Burger', 'American Food', 'Cast Iron', 'Comfort Food'],
     linkedRecipeSlug: 'classic-american-cheeseburger',
@@ -263,8 +270,9 @@ export const ARTICLES_DATA: Article[] = [
     publishedDate: 'October 17, 2026',
     readTimeMinutes: 5,
     author: {
-      name: 'Oliver Sterling',
-      role: 'British Heritage Food Correspondent',
+      name: 'Meal Yield Editorial Team',
+      role: 'British Food Desk',
+      bio: 'Tested and verified by the Meal Yield kitchen team. We review every ratio, cooking time, and yield to ensure reliable results at home.',
     },
     tags: ['British Food', 'Fish and Chips', 'Pub Classics', 'Seaside Food', 'Beer Batter'],
     linkedRecipeSlug: 'traditional-british-fish-and-chips',
@@ -299,8 +307,9 @@ export const ARTICLES_DATA: Article[] = [
     publishedDate: 'October 14, 2026',
     readTimeMinutes: 6,
     author: {
-      name: 'Elena Rossi',
-      role: 'Italian Gastronomy Specialist',
+      name: 'Meal Yield Editorial Team',
+      role: 'Italian Gastronomy Desk',
+      bio: 'Tested and verified by the Meal Yield kitchen team. We review every ratio, cooking time, and yield to ensure reliable results at home.',
     },
     tags: ['Italian Pizza', 'Neapolitan Pizza', 'Dough Fermentation', 'Margherita', 'Wood Fired'],
     linkedRecipeSlug: 'authentic-italian-margherita-pizza',
@@ -337,8 +346,9 @@ export const ARTICLES_DATA: Article[] = [
     publishedDate: 'October 13, 2026',
     readTimeMinutes: 5,
     author: {
-      name: 'Chef Tariq Mansoor',
-      role: 'South Asian Culinary Historian',
+      name: 'Meal Yield Editorial Team',
+      role: 'South Asian Culinary Desk',
+      bio: 'Tested and verified by the Meal Yield kitchen team. We review every ratio, cooking time, and yield to ensure reliable results at home.',
     },
     tags: ['Cooking Tips', 'Basmati Rice', 'Kitchen Science', 'Grains', 'Rice Cooking'],
     sections: [
@@ -380,8 +390,9 @@ export const ARTICLES_DATA: Article[] = [
     publishedDate: 'October 14, 2026',
     readTimeMinutes: 4,
     author: {
-      name: 'Marcus Vance',
-      role: 'Culinary Technique Specialist',
+      name: 'Meal Yield Editorial Team',
+      role: 'Culinary Technique Desk',
+      bio: 'Tested and verified by the Meal Yield kitchen team. We review every ratio, cooking time, and yield to ensure reliable results at home.',
     },
     tags: ['Chicken Cooking', 'Cooking Tips', 'Meat Science', 'Kitchen Guides'],
     sections: [
@@ -417,8 +428,9 @@ export const ARTICLES_DATA: Article[] = [
     publishedDate: 'October 11, 2026',
     readTimeMinutes: 6,
     author: {
-      name: 'Dr. Sarah Jenkins, RD',
-      role: 'Clinical Dietitian & Metabolic Health Contributor',
+      name: 'Meal Yield Editorial Team',
+      role: 'Nutrition & Metabolic Health Desk',
+      bio: 'Reviewed against evidence-based public health dietary guidance (WHO, NHS, CDC).',
     },
     tags: ['Blood Sugar', 'Nutrition', 'Basmati Rice', 'Glycemic Index', 'Resistant Starch'],
     medicalDisclaimer: true,
@@ -478,8 +490,9 @@ export const ARTICLES_DATA: Article[] = [
     publishedDate: 'October 13, 2026',
     readTimeMinutes: 5,
     author: {
-      name: 'Dr. Sarah Jenkins, RD',
-      role: 'Clinical Dietitian & Metabolic Health Contributor',
+      name: 'Meal Yield Editorial Team',
+      role: 'Nutrition & Metabolic Health Desk',
+      bio: 'Reviewed against evidence-based public health dietary guidance (WHO, NHS, CDC).',
     },
     tags: ['Blood Pressure', 'Sodium', 'Heart Health', 'DASH Diet', 'Healthy Cooking'],
     medicalDisclaimer: true,
@@ -523,3 +536,5 @@ export const ARTICLES_DATA: Article[] = [
     },
   },
 ];
+
+export const ARTICLES_DATA: Article[] = [...ARTICLES_CORE, ...ARTICLES_GUIDES];

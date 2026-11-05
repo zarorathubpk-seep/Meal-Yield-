@@ -1,0 +1,376 @@
+MEAL YIELD — GOOGLE AI STUDIO MASTER DEVELOPMENT PROMPT
+Copy this entire document into Google AI Studio while the existing Meal Yield project is open or uploaded. The editorial drafts appended at the end are reference material; do not publish without review. Separately attach the custom green-and-white chef-with-cloche favicon image when available.
+
+================================================================
+ROLE / PROJECT CONTEXT
+================================================================
+Act as a senior React + TypeScript + Vite developer, technical SEO specialist, food editorial lead, and visual asset production manager. Improve my EXISTING production website at https://mealyield.com. It is a recipe/cooking site called Meal Yield. Do NOT replace it with a newly generated generic site. I want a professional, fast, responsive, useful, recipe-rich website with entirely original editorial writing and original visual assets.
+
+The existing project is React + TypeScript + Vite with a GitHub repository named Meal-Yield-. Relevant files include:
+- src/data/recipes.ts which exports RECIPES_DATA: Recipe[]
+- src/types/content.ts which defines the Recipe and other content types
+- the existing RecipeDetailView.tsx component which imports RECIPES_DATA and renders title, subtitle, description, cuisine, category, publish date, author, image, prep/cook times, servings, difficulty, ingredients, individual method steps, tips, storage notes, nutrition and Pinterest data; it also has serving-size scaling, measurement-unit conversion, print/share and related recipes.
+- inspect the actual directory, home page, recipe directory, blog data, category navigation, routes, helpers, components, static/public assets, index.html, styling and package.json before making changes. These paths are context, not an assumption that every other file exists.
+
+Existing recipe data currently contains SIX recipes: Pakistani Chicken Karahi, Italian Margherita Pizza, Chicken Biryani, American Double Smash Cheeseburger, British Fish and Chips, and Italian Spaghetti Carbonara. Preserve ALL existing recipes, IDs, slugs, URLs, component behavior and existing working pages unless an actual defect requires a carefully justified fix. Check for duplicate IDs/slugs before adding anything.
+
+DESIGN: Preserve the current branding, layout, typography, responsiveness, buttons and existing attractive design. Keep the site's current palette, primarily dark green, cream/white and warm accent orange, unless a change is required for accessibility. Do not add irrelevant modules, disruptive animations, new frameworks, paid dependencies, or visually inconsistent styling. No broken links or blank category pages.
+
+================================================================
+PHASE 1: AUDIT, SAFE IMPLEMENTATION, AND CONTENT MODEL
+================================================================
+1. Make a brief inventory of the project and existing recipes/pages/assets. Identify any missing pages or broken assets. Do not guess at source files you haven't inspected. Take a reversible, minimal-diff approach and make a backup or isolated branch/commit before extensive edits when supported.
+2. Check Recipe and blog/article TypeScript interfaces. Extend them minimally for any optional SEO fields, updated date, source credits, photo credits, diet/allergen notes, or verification labels without breaking existing data/components. If nutrition is unverified or unavailable, make the nutrition component optional rather than inventing numeric values. If a blog section already exists, reuse its model/UI.
+3. Keep the existing recipe detail experience fully functional: cards, cuisine filters, searching, category pages, related recipes, individual recipe pages, metric/US conversions, servings scaler, ingredient checkboxes, Pinterest image references, print, share, and mobile layout.
+4. Audit existing content for claims of kitchen testing, made-up food experts and author biographies, misleading timings and unsupported nutrition. Do not create fictional human chefs, credentials, testing claims, reviews, or star ratings. Use truthful editorial attribution (e.g. “Meal Yield Editorial Team”) where an actual author is unknown, and clearly label adapted/development recipes as untested until manually verified.
+5. Do not write a plan and stop: implement the code in the working project if editing capabilities exist. Show an explicit checklist of what changed and what couldn't be completed. Do not claim files or images were created unless they truly exist.
+
+================================================================
+PHASE 2: ORIGINAL, FULL-LENGTH RECIPE CONTENT
+================================================================
+LANGUAGE: Write EVERY public-facing recipe and blog article in clear, fluent natural ENGLISH, suitable for international home cooks. Titles should be search-friendly, not stuffed with exaggerated adjectives. Keep each recipe culturally accurate for its described regional variation. Original writing does not mean claiming to invent well-known traditional dishes; it means every paragraph, instruction and helpful note is newly composed rather than copied from another website.
+
+FIRST PRIORITY — Turn the SIX detailed recipe drafts in the APPENDIX below into full, properly structured, publication-review-ready entries. The recipe subjects are:
+A. Pakistani Aloo Keema
+B. Indian Chana Masala (Weeknight Chickpea Curry)
+C. Bangladeshi Bhuna Khichuri
+D. Italian Saffron Risotto (Wine-Free Home Version)
+E. British Cottage Pie
+F. American Fluffy Buttermilk Pancakes
+
+These APPENDIX drafts contain actual ingredient quantities, methods and source links. Use them as starting material, not as finished kitchen-tested recipes. Adapt to the actual Recipe type in src/types/content.ts and preserve current field shapes. Do not blindly paste Markdown into a TypeScript data array. Check ingredient quantities versus method references, vegetarian/meat labelling, actual timings, and safe cooking temperatures before marking them reviewed. Do not copy paragraphs or photos from the linked recipe sources.
+
+SECOND PRIORITY — Develop EIGHTEEN MORE original complete recipes (NOT only recipe cards or one-paragraph teasers), based on culinary research and the exact subjects below:
+- Pakistani: Chicken Yakhni Pulao; Aloo Palak; Shami Kebab.
+- Indian: Paneer Butter Masala; Aloo Gobi; Dal Tadka.
+- Bangladeshi: Beef Kala Bhuna; Chicken Khichuri; Begun Bhorta.
+- Italian: Eggplant Parmigiana; Pasta al Pomodoro; Classic Tiramisu.
+- American: Oven-Baked Mac and Cheese; Chocolate Chip Cookies; Classic Coleslaw.
+- British: Shepherd's Pie (lamb, distinguish from beef cottage pie); Victoria Sponge Cake; Yorkshire Puddings.
+
+THEREFORE the site should have the existing 6 recipes PLUS 6 drafted recipes PLUS 18 newly developed recipes = TARGET 30 distinct complete recipes, provided the relevant content and assets are actually created and validated. Prioritise filling currently sparse Indian and Bangladeshi cuisine sections. Avoid duplicate dishes/titles/slugs and distinguish regional variations honestly. If content must be delivered in batches, complete, save and validate batch 1 (six draft recipes) before proceeding to batch 2 (eighteen new recipes). Never replace detailed recipes with placeholders merely to reach a count.
+
+EVERY recipe must include ALL relevant fields supported by the existing UI: stable unique id and slug, unique SEO title and meta description, readable subtitle and detailed intro, correct cuisine and category, realistic serving count, prep and active cook times (plus marination/rising/soaking where relevant), beginner-friendly difficulty, a complete measured ingredient list with exact amounts/units/optional notes, 5–10 genuinely detailed chronological cooking steps with practical temperatures/sensory doneness cues, useful chef tips and substitutions, storage/reheating guidance based on food safety, reasonable allergen/diet notes when appropriate, an assigned working hero image and original Pinterest image, sensible unique Pinterest text/keywords, internal links to appropriate category and related articles. Use genuine verified source URLs as transparent editorial references, not fabricated citations. Avoid unsupported claims like “definitive,” “100% authentic,” “healthiest,” or invented history. Nutrition must be estimated from a defensible ingredient calculation if displayed and labelled as an estimate; otherwise omit it.
+
+IMPORTANT: Ensure ingredient amounts and steps agree precisely. Adjust recipes to be cookable by an ordinary home cook, with alternatives where specialist equipment is mentioned. Include food-safe chicken/meat cooking instructions and clear egg/dairy/allergen handling. Do not mistake AI-generated recipes for independently kitchen-tested recipes. Cite reputable recipe-development and food-safety sources in editorial notes when available and actually checked; otherwise flag for review.
+
+================================================================
+PHASE 3: ORIGINAL ARTICLES AND COOKING GUIDES
+================================================================
+Publish-review-ready versions of TWO complete original article drafts from the APPENDIX:
+1. How to Double a Recipe Without Doubling the Problems
+2. Build Balanced Meals Without Giving Up Your Favourite Recipes
+
+Also write EIGHT completely original, practical blog articles (not just titles):
+- How to Make Basmati Rice Fluffy, Not Sticky
+- Why Your Curry Tastes Flat: Acid, Salt and Spices
+- Cooking Times vs Food Thermometer: What Matters More?
+- How to Store Cooked Rice Safely
+- 5 Budget-Friendly Ways to Add Vegetables to Dinner
+- Meal Prep for Small Households Without Food Waste
+- Fresh vs Dried Herbs: When to Add Each
+- Understanding Portions, Servings and Recipe Yield
+
+For each blog: helpful H1, descriptive short introduction, logically structured H2/H3 subheadings, detailed actionable information, realistic examples, an original hero image, 2–4 highly relevant internal links, useful metadata, credible up-to-date external references when available and verified, no copied sentences. Explain food-safety and nutrition recommendations responsibly without unsupported medical promises. Implement working blog listings, detail pages, appropriate categories, breadcrumbs and links. The TARGET is 10 substantive articles, but do not publish articles that have not been reviewed.
+
+================================================================
+PHASE 4: ALL IMAGES MUST BE ORIGINAL AND WORKING
+================================================================
+This is non-negotiable. Make the imagery visually cohesive across the ENTIRE site, including old recipe cards, new recipe cards, article thumbnails, banners and social previews.
+- For each recipe produce or commission a unique, newly created, high-quality image genuinely depicting THAT exact cooked dish with correct key ingredients, appearance, plating and cultural context. For each article create a relevant unique non-stock illustration or photographic-style scene.
+- NEVER copy, hotlink, scrape, download without rights, or pass off Google Images, Pinterest, food bloggers' photos, paid stock, copyrighted logos or watermarked pictures as our original photos.
+- Prefer our own newly photographed food. If a capable original image-generation tool is available, create original photorealistic food illustrations, and label AI-generated visuals truthfully when appropriate — do not claim AI art is an actual photo of a recipe that was cooked and tested. If no image-generation capability is available in this AI Studio environment, write exact production-ready image prompts and a clear asset manifest for the missing images, and DO NOT pretend files were generated or point img src to nonexistent assets.
+- Hero imagery should work well in 16:9, with high-resolution originals; produce 2:3 vertical Pinterest-compatible versions where possible, plus responsive derivatives (WebP/AVIF or optimized JPG). The vertical image must match the same recipe; avoid awkward crops. Keep composition elegant with natural light, believable textures, clean background, no watermarks, no random text overlays, no duplicated food artifacts, no visible brands, and no fake faces/credentials.
+- Save actual assets locally under public/images/... and update every image and pinImage path. Provide meaningful English alt text. Avoid broken links, ensure good loading performance, avoid layout shift, lazy-load offscreen thumbnails, and don't lazy-load the main LCP hero unnecessarily.
+- Include a plain-text ASSET MANIFEST of what exists, what was newly generated, file names/dimensions, attribution/licence where relevant, and what still needs original photography or generated visuals. Existing photos should be retained only if ownership/licence is established; otherwise replace or flag them.
+
+================================================================
+PHASE 5: FAVICON / SITE ICON
+================================================================
+I will attach my OWN chosen favicon design separately after sending this prompt. It is a GREEN-AND-WHITE icon of a smiling chef wearing a chef hat and holding a covered serving platter/cloche. Treat the attached image as the canonical design: do not substitute an unrelated chef image and do not materially redesign the icon. Simplify details only to improve legibility at small sizes. If no image is attached yet, leave existing favicon untouched and mark this as “awaiting owner-supplied icon.” After I attach it, create proper production files (favicon.ico with common small resolutions, PNG 16x16/32x32, apple touch icon 180x180, optionally 192x192 and 512x512 app icons). Store in public/, update index.html and any manifest without duplicate icon links, verify it displays in browser tabs and mobile bookmarks, and preserve the source design.
+
+================================================================
+PHASE 6: REAL TECHNICAL SEO / CONTENT DISCOVERABILITY
+================================================================
+- Inspect how routing works and create real distinct, shareable and crawlable URLs for recipe and article pages; keep current published slugs stable and redirect if unavoidable rather than breaking links. Build a valid sitemap.xml including actually accessible URLs; robots.txt, canonical URLs, correct 200 and 404 behavior, unique titles and meta descriptions, semantic headings and useful breadcrumbs.
+- Add valid Recipe and BreadcrumbList structured data for recipes and BlogPosting/Article structured data for articles where appropriate. Reflect actual visible data, accurate dates and working images, and never invent ratings or reviews. Validate with Rich Results Test where supported; if not, list manual tests.
+- React/Vite site may be client-rendered. Check what Googlebot can actually see; consider prerendering or SSR for content pages if justified, within the current architecture. Do not assert SEO is “fixed” without testing. Prioritise mobile performance, accessible contrast, keyboard controls, semantic images, internal linking and Core Web Vitals.
+- Add About, Editorial Policy, Contact, and image/AI disclosure information where appropriate and truthful. Do not invent people or qualifications.
+- Never claim guaranteed Google rankings, immediate indexing, AdSense/RevBid approval, or revenue. Keep all ad scripts / monetisation logic unchanged unless a defect requires an explicitly requested and separately reviewed fix. Do not generate artificial traffic, invalid ad impressions, fake clicks or bot visits.
+
+================================================================
+QUALITY CONTROL AND REQUIRED OUTPUT
+================================================================
+1. Analyse the existing project structure; give a short, specific audit identifying actual files that will be touched.
+2. Implement changes in working project files, not just mockups. Maintain all existing components, branding and site functionality.
+3. Work in safe batches; do not silently truncate data or omit a recipe. Check unique IDs and slugs, import paths, compile-time type checks, build output and internal navigation. If a command can be run, run npm install only when necessary, npm run build, and existing lint/tests. Report the real results.
+4. Test mobile and desktop layouts, images, food/recipe search, cuisine navigation, blog pages, time/unit/scaler functions, accessibility and metadata. Don't fabricate test results.
+5. Explicitly list: new recipe titles and count; new article titles and count; actual original images created with paths; existing images requiring rights review; status of favicon attachment/installation; SEO changes; outstanding editorial kitchen tests; incomplete tasks; and exact files changed.
+6. If direct project editing is NOT possible in your current environment, supply exact ready-to-paste changes with filenames in manageable batches. State clearly what is only a proposal versus actually saved/tested code.
+7. Preserve all existing content until replacements have been validated; do NOT deploy, publish, delete, overwrite the live site or commit to main without me reviewing the changes.
+
+NOW START: inspect the existing React/Vite codebase if it is accessible. Then implement the first six complete source-informed recipe entries and two full blog articles from the APPENDIX, followed by the remaining work in batches. The supplied source links are research references, not permission to reuse anyone's copyrighted photos or exact prose. All newly produced public-facing copy must be originally written.
+
+================================================================
+APPENDIX: CONTENT STARTER WITH SIX COMPLETE RECIPE DRAFTS,
+TWO COMPLETE ARTICLE DRAFTS, RESEARCH LINKS AND TOPIC NOTES
+The following is working editorial material, NOT a claim of recipe testing.
+================================================================
+
+# Meal Yield — source-backed content starter (draft)
+
+Prepared 22 October 2026. This is **editorial draft content, not yet published or kitchen-tested**. Recipes are newly worded adaptations guided by the linked culinary sources. Each recipe should be checked by a cook for exact quantities, yields, doneness and food safety before publication. Do not claim they were developed or tested by Meal Yield without actually doing so. Do not copy third-party text, photos, reviews, author credentials, or ratings.
+
+## Recipe 1 — Pakistani Aloo Keema
+
+- **Cuisine:** Pakistani
+- **Page title:** Pakistani Aloo Keema Recipe | Mince and Potato Curry
+- **Slug:** `pakistani-aloo-keema`
+- **Meta description:** Learn how to make comforting Pakistani aloo keema with minced meat, potatoes, tomatoes and aromatic spices. Includes a simple step-by-step method.
+- **Source for culinary verification:** [Fatima Cooks — Pakistani Aloo Keema](https://fatimacooks.net/aloo-keema/)
+- **Editorial angle:** A family-style curry that pairs well with warm roti. The potatoes absorb the savoury tomato-and-mince gravy.
+
+### Ingredients — draft for 3–4 portions
+- 500 g minced lamb or beef
+- 2 medium potatoes, peeled and cut into bite-sized pieces
+- 1 large onion, finely diced
+- 4 small tomatoes, chopped
+- 1 tbsp each minced garlic and ginger
+- 3 tbsp neutral cooking oil
+- 1 tsp ground cumin; 1½ tsp ground coriander
+- ½ tsp turmeric; ½–1 tsp chilli powder; ½ tsp garam masala
+- Salt to taste; fresh coriander and sliced green chillies to finish
+- Approximately 250 ml water, added as needed
+
+### Method — original editorial draft
+1. Warm the oil in a heavy pot. Soften the onion over medium heat, then add garlic and ginger until fragrant.
+2. Stir in tomatoes, ground spices and salt. Cook until the tomatoes break down and the mixture becomes thick and glossy.
+3. Add the mince, break up lumps and cook until its raw colour has disappeared and it begins to brown.
+4. Pour in enough water to prevent sticking, partially cover and simmer gently until the mince is nearly tender.
+5. Add potatoes and continue simmering until fully tender and the gravy has reduced to the consistency you want. Finish with coriander and green chilli.
+
+**Kitchen checks before publishing:** Test the liquid amount and simmer time with the selected mince and potato variety; ensure minced meat is fully cooked. **Image brief:** A close, well-lit hero photo of aloo keema in a deep green ceramic bowl with visible potato pieces, roti beside it. **Alt text:** “Pakistani aloo keema curry with minced meat and potatoes served with roti.”
+
+## Recipe 2 — Indian Chana Masala (Weeknight Chickpea Curry)
+
+- **Cuisine:** Indian
+- **Page title:** Easy Indian Chana Masala | Chickpea Curry for Dinner
+- **Slug:** `indian-chana-masala`
+- **Meta description:** Make a weeknight chana masala with chickpeas, onions, tomatoes and warming spices. Serve the rich curry with rice or roti.
+- **Source for culinary verification:** [Swasthi's Recipes — Chana Masala](https://www.indianhealthyrecipes.com/chana-masala/)
+- **Editorial angle:** The version below is deliberately a quicker cooked-chickpea adaptation; don't describe it as the only traditional preparation.
+
+### Ingredients — draft for 4 portions
+- 2 x 400 g tins chickpeas, drained and rinsed (or an equivalent amount cooked from dried)
+- 1 onion, finely chopped; 3 tomatoes, finely chopped
+- 1 tbsp ginger-garlic paste; 2 tbsp oil
+- 1 tsp cumin seeds; 1½ tsp ground coriander; ½ tsp turmeric
+- ½–1 tsp chilli powder; 1 tsp garam masala
+- 150–250 ml water; salt to taste
+- Lemon, chopped coriander and sliced onion for serving
+
+### Method — original editorial draft
+1. Heat oil and briefly toast cumin seeds. Add onion and cook until it starts to turn golden.
+2. Stir in ginger-garlic paste. Add tomatoes, salt and the ground spices except garam masala; cook to a thick, fragrant base.
+3. Add chickpeas and water. Simmer until the sauce coats the chickpeas and the flavours combine, adding water for a looser gravy if desired.
+4. Mash a small spoonful of chickpeas into the sauce for extra body. Finish with garam masala, lemon and coriander.
+
+**Kitchen checks:** Taste-test spice amounts; note that canned and dried chickpeas need different handling. **Image brief:** Chana masala with coriander and lemon in an earthen bowl; basmati rice nearby. **Alt text:** “Indian chana masala chickpea curry garnished with fresh coriander.”
+
+## Recipe 3 — Bangladeshi Bhuna Khichuri
+
+- **Cuisine:** Bangladeshi
+- **Page title:** Bangladeshi Bhuna Khichuri | Fragrant Rice and Lentils
+- **Slug:** `bangladeshi-bhuna-khichuri`
+- **Meta description:** Discover Bangladeshi bhuna khichuri, fragrant rice and lentils cooked with whole spices, caramelised onion and warming aromatics.
+- **Source for culinary verification:** [Banglar Rannaghor — Dhaka Style Bhuna Dal Khichuri](https://www.banglarrannaghor.com/post/dhaka-style-bhuna-dal-khichuri-recipe). Also see [Bong Eats — Niramish Bhuna Khichuri](https://www.bongeats.com/recipe/niramish-bhuna-khichuri) for a distinct Bengali variation.
+- **Editorial angle:** This dish has regional and household variations. Specify that the below is a **Dhaka-inspired draft**, not a definitive national recipe.
+
+### Ingredients — small-batch development draft, 3–4 portions
+- 1½ cups fragrant short-grain rice, rinsed and soaked
+- ¼ cup yellow moong dal and ½ cup red lentils, rinsed
+- 1 onion, thinly sliced; 1 tsp ginger paste; ½ tsp garlic paste
+- 1½ tbsp mustard oil and 1 tbsp neutral oil
+- 2 cardamom pods, 3 cloves, 1 small cinnamon stick, 1 bay leaf
+- ½ tsp turmeric; ¼ tsp each ground coriander and chilli powder
+- 3–3½ cups hot water as an **untested starting range**
+- Salt, green chillies, fried onions and a little ghee to finish
+
+### Method — original editorial draft
+1. Drain the soaked rice and dal well. Cook sliced onion in warmed oils until light golden; add whole spices and stir briefly.
+2. Add ginger, garlic, turmeric, coriander and chilli; stir with a splash of water to keep the spices from scorching.
+3. Fold in rice and lentils, coating everything in the fragrant onion mixture.
+4. Add hot water, salt and green chillies. Cover and gently cook, checking texture and liquid as it simmers.
+5. Allow to rest off heat, then fluff gently. Scatter fried onions on top and add a little ghee if desired.
+
+**Kitchen checks:** This scaled-down water ratio has **not been validated**; do a full test and adjust according to rice and dal used before publishing. **Image brief:** Golden bhuna khichuri in a shallow brass bowl, fried onions and green chillies. **Alt text:** “Bangladeshi bhuna khichuri made with fragrant rice and lentils.”
+
+## Recipe 4 — Italian Saffron Risotto (Wine-Free Home Version)
+
+- **Cuisine:** Italian
+- **Page title:** Saffron Risotto Recipe | Creamy Italian Rice, No Wine
+- **Slug:** `italian-saffron-risotto`
+- **Meta description:** Make an Italian-inspired saffron risotto with creamy rice, warm stock, butter and cheese. A straightforward wine-free home variation.
+- **Source for culinary verification:** [GialloZafferano — Saffron Risotto](https://www.giallozafferano.com/recipes/saffron-risotto.html)
+- **Editorial angle:** Clearly label this a wine-free variation; don't conflate it with a strict traditional Milanese recipe.
+
+### Ingredients — draft for 4 portions
+- 320 g arborio or carnaroli rice
+- 1 small onion or shallot, finely chopped
+- 1 litre warm vegetable stock, plus a little extra if needed
+- 1 small pinch saffron, steeped in a few spoons of warm stock
+- 2 tbsp butter; 1 tbsp olive oil
+- 50 g finely grated hard cheese suitable for the intended audience
+- Salt and freshly ground pepper to taste
+
+### Method — original editorial draft
+1. Warm the stock in a separate pot and steep saffron in a little of it.
+2. Gently cook the chopped onion in olive oil and some butter without burning it.
+3. Stir in dry rice for a minute until warmed through. Add stock a ladle at a time, stirring often and letting each addition absorb before the next.
+4. Add saffron stock midway through cooking. Continue until the rice is tender with a gentle bite and the mixture flows softly rather than forming a stiff mound.
+5. Turn off the heat and beat in the remaining butter and grated cheese. Rest briefly and serve straight away.
+
+**Kitchen checks:** Verify exact stock absorption, cook time and cheese dietary suitability. **Image brief:** Bright golden saffron risotto with delicate rice texture on a white ceramic plate. **Alt text:** “Creamy golden Italian saffron risotto served on a white plate.”
+
+## Recipe 5 — British Cottage Pie
+
+- **Cuisine:** British
+- **Page title:** Classic British Cottage Pie | Beef and Mashed Potatoes
+- **Slug:** `british-cottage-pie`
+- **Meta description:** Try a comforting British cottage pie with savoury minced beef, vegetables and a golden mashed potato topping.
+- **Source for culinary verification:** [BBC Good Food — Cottage Pie](https://www.bbcgoodfood.com/recipes/cottage-pie)
+- **Editorial angle:** Cottage pie uses beef mince; shepherd's pie traditionally uses lamb. This is a no-wine home variation.
+
+### Ingredients — development draft for 4 portions
+- 500 g minced beef; 1 onion; 1 carrot; 1 celery stalk; 2 garlic cloves
+- 1 tbsp tomato paste; 1 tbsp flour; 300 ml beef stock
+- 1 tbsp olive oil; ½ tsp dried thyme; salt and pepper
+- 750 g potatoes, peeled and cubed
+- 2 tbsp butter; approximately 80 ml milk; optional grated cheddar
+
+### Method — original editorial draft
+1. Brown beef in a hot pan, then set aside. Soften chopped onion, carrot and celery; add garlic.
+2. Stir in tomato paste and flour, return beef to the pan, add stock and thyme, and simmer until the gravy is thick rather than watery.
+3. Boil potatoes until soft, drain thoroughly and mash with warm milk and butter. Season the mash.
+4. Spread the beef mixture in a baking dish, spoon on the mash and create a rough surface with a fork. Add a little cheese if using.
+5. Bake at approximately 200°C until the topping is browned and the filling is bubbling. Let stand briefly before serving.
+
+**Kitchen checks:** Confirm the pan size, final baking time and safe cooked filling temperature in a test batch. **Image brief:** Baked cottage pie in a ceramic dish with golden ridged mash and a cut slice. **Alt text:** “Classic British cottage pie with golden mashed potato topping.”
+
+## Recipe 6 — American Fluffy Buttermilk Pancakes
+
+- **Cuisine:** American
+- **Page title:** Fluffy Buttermilk Pancakes | American Breakfast Recipe
+- **Slug:** `american-buttermilk-pancakes`
+- **Meta description:** Make fluffy American buttermilk pancakes with a tender centre and golden edges. Includes tips for mixing and griddle heat.
+- **Source for culinary verification:** [King Arthur Baking — Buttermilk Pancakes](https://www.kingarthurbaking.com/recipes/buttermilk-pancakes-recipe)
+- **Editorial angle:** A practical breakfast alternative to the site's existing burger recipe.
+
+### Ingredients — draft for 4 portions
+- 240 g plain flour; 3 tbsp sugar; 1 tsp baking powder; 1 tsp baking soda; ½ tsp salt
+- 1 egg; 450 ml buttermilk; 30 g melted butter
+- Optional vanilla; butter and fruit for serving
+
+### Method — original editorial draft
+1. Whisk flour, sugar, raising agents and salt in one bowl. Whisk egg, buttermilk and melted butter in another.
+2. Stir wet into dry only until no large dry pockets remain. Small lumps are fine; overmixing makes pancakes tougher.
+3. Heat a lightly greased griddle to medium heat. Spoon out small rounds and cook until bubbles appear and the lower surface is golden.
+4. Flip once and cook through. Serve warm with fruit or your chosen topping.
+
+**Kitchen checks:** Confirm actual yield for your ladle size and cooking temperature; keep cooked pancakes warm safely. **Image brief:** A stack of golden pancakes with blueberries and a small drizzle of syrup; natural light. **Alt text:** “Stack of fluffy American buttermilk pancakes with blueberries.”
+
+---
+
+## Original blog article draft A — How to Double a Recipe Without Doubling the Problems
+
+**Slug:** `how-to-double-a-recipe`  
+**Title:** How to Double a Recipe: Ingredients, Pan Size and Cooking Time  
+**Meta description:** Scaling a recipe is more than multiplying ingredients. Learn how to adjust seasoning, pan size, liquid and cooking time for bigger batches.
+
+Doubling a recipe is easy on paper: change a four-serving meal into eight servings, and multiply every ingredient by two. In the kitchen, a larger batch behaves differently. Crowded pans trap moisture, bigger pots take longer to heat, and a thick layer of food may cook unevenly.
+
+Start with the ingredient list. Most core ingredients—such as rice, chickpeas and chopped vegetables—can be multiplied directly as a first calculation. Ingredients added for taste, especially salt and chilli, deserve a more cautious approach: begin with slightly less than the fully scaled amount, taste when safe, and adjust.
+
+Next, check equipment capacity. A narrow pan that handles one onion and 250 grams of mince may steam instead of brown when filled with twice as much food. Brown meat in batches if necessary. For baked food, aim for a similar batter or filling depth rather than simply putting double the mixture into the original tin.
+
+Don't assume the cooking time doubles. Some steps barely change; others need extra time because the food takes longer to heat through. Use recipe-specific signs of doneness and a suitable food thermometer where relevant. Finally, record what changed. Meal Yield's serving calculator helps with the arithmetic, but your pan, heat source and final batch size still matter.
+
+**Related internal links to create:** recipe scaling calculator; Aloo Keema; British Cottage Pie. **Photo:** Two different-sized pots holding the same curry at different batch sizes.
+
+## Original blog article draft B — Build Balanced Meals Without Giving Up Your Favourite Recipes
+
+**Slug:** `balanced-meals-with-favourite-recipes`  
+**Title:** How to Build a Balanced Meal Around Rice, Curry or Pasta  
+**Meta description:** Learn practical ways to combine vegetables, protein and higher-fibre carbohydrates when serving everyday curries, rice dishes and pasta.
+
+A balanced meal doesn't require abandoning your favourite foods. The useful question is what accompanies the main dish and how the overall pattern of eating adds up across the day or week.
+
+If dinner is a hearty curry with rice, consider adding a generous vegetable side and paying attention to the quantity of rice and protein foods. For pasta, a salad or cooked vegetables can provide more variety. Beans and lentils are versatile ways to add plant protein and fibre to everyday meals.
+
+The NHS Eatwell Guide suggests that fruit and vegetables and starchy carbohydrates should each make up just over a third of the overall diet. It also recommends choosing higher-fibre starchy foods where possible and including a variety of protein sources. That balance is a guide to overall eating habits, not a rule that every single plate must match exactly.
+
+For cooking at home, three small habits are especially practical: plan vegetables at the same time as the main dish, serve sauces and toppings with awareness of portions, and use leftovers sensibly to avoid waste. These are general healthy-eating ideas, not personalised medical advice.
+
+**Source:** [NHS Eatwell Guide](https://www.nhs.uk/live-well/eat-well/food-guidelines-and-food-labels/the-eatwell-guide/). **Related internal links to create:** chana masala; bhuna khichuri; healthy eating category. **Photo:** Family-style rice, curry, vegetables and lentils served together.
+
+---
+
+## Next editorial batch — 18 researched titles to commission, not yet drafted
+
+These are **ideas**, not claims that the recipes have been sourced or tested:
+
+- Pakistani: Chicken Yakhni Pulao; Aloo Palak; Shami Kebab
+- Indian: Paneer Butter Masala; Aloo Gobi; Dal Tadka
+- Bangladeshi: Beef Kala Bhuna; Chicken Khichuri; Begun Bhorta
+- Italian: Eggplant Parmigiana; Pasta al Pomodoro; Classic Tiramisu
+- American: Oven-Baked Mac and Cheese; Chocolate Chip Cookies; Classic Coleslaw
+- British: Shepherd's Pie; Victoria Sponge Cake; Yorkshire Puddings
+
+Potential future cuisine categories: Korean (Bibimbap), Chinese (Mapo Tofu), Middle Eastern/North African (Shakshuka), Mexican (Tacos), Japanese (Miso Soup), Thai (Green Curry). Research each recipe with an appropriate regional specialist before labelling it authentic.
+
+## Further blog and cooking-tip topics
+
+1. How to Make Basmati Rice Fluffy, Not Sticky
+2. Why Your Curry Tastes Flat: Acid, Salt and Spices
+3. Cooking Times vs Food Thermometer: What Matters More?
+4. How to Store Cooked Rice Safely
+5. 5 Budget-Friendly Ways to Add Vegetables to Dinner
+6. Meal Prep for Small Households Without Food Waste
+7. Fresh vs Dried Herbs: When to Add Each
+8. Understanding Portions, Servings and Recipe Yield
+
+For safe leftover guidance, see [UK Food Standards Agency](https://www.food.gov.uk/safety-hygiene/cooking-your-food). Verify any handling advice for rice and other higher-risk foods against the applicable local authority before publication.
+
+---
+
+## SEO and publication checklist for the developer
+
+- Each recipe needs a unique, crawlable URL (`/recipe/<slug>`), useful title, meta description and visible H1.
+- Include genuinely useful copy: a description, an ingredients list with quantities, cooking steps, honest prep/cook times, serving yield, substitutions actually tested, storage safety, and useful troubleshooting.
+- Use appropriate **Recipe** JSON-LD with image, title, ingredient, instructions, time and yield. Validate it in Google's Rich Results Test. Never invent star ratings or reviews.
+- Google recommends recipe photos of the actual finished food, including suitable high-resolution versions with 1:1, 4:3 and 16:9 ratios where available.
+- Photos must be original or clearly licensed for reuse. A source article's image is **not** automatically free to republish. AI-generated illustrative images may be used if accurately described, but should not be passed off as personally photographed or tested food.
+- Provide accurate alt text, compress images (WebP/AVIF if appropriate), and avoid lazy-loading the main visible recipe image unnecessarily.
+- Add internal links between cuisine category pages, relevant recipes, kitchen guides and scaling tools.
+- Verify Googlebot can see the main recipe text after JavaScript rendering. React/Vite client rendering deserves a check in Search Console's URL Inspection Tool; prerendering or SSR may improve reliability if necessary.
+- Publish a valid sitemap and check canonical tags, `robots.txt`, 200/404 response codes and mobile layout. Request indexing after publication; don't promise rankings.
+- Don't set fabricated nutrition numbers or made-up chef biographies to fill existing template fields. Omit nutrition until calculated from validated quantities, and identify adaptations as such.
+- Distinguish editorial review, recipe testing, sourcing, and publication dates.
+
+**Technical source:** [Google Recipe structured-data documentation](https://developers.google.com/search/docs/appearance/structured-data/recipe), [Google JavaScript SEO guide](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics), [Google's helpful-content guidance](https://developers.google.com/search/docs/fundamentals/creating-helpful-content).
+
+## Integrating with current React site
+
+The earlier supplied `RecipeDetailView.tsx` component expects fields including `title`, `subtitle`, `description`, `cuisine`, `category`, `publishedDate`, `image`, `servings`, ingredient amounts and units, cooking steps, author name, tips, storage notes, nutrition and Pinterest metadata. The **source data file** (likely `src/data/recipes.ts`) and the exact `Recipe` TypeScript interface are necessary to safely convert these drafts into directly importable objects. The drafts above are therefore **not yet deployable JSON/TS** and are **not yet published**.
+
+### Favicon installation in Vite
+
+Copy `favicon.ico`, `favicon-32.png` and `apple-touch-icon.png` into the Vite application's `public/` directory. In `index.html` inside `<head>`, add or update:
+
+```html
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+```
+
+Remove conflicting old favicon links, commit the changes, let deployment complete, and hard-refresh to check the browser tab icon.

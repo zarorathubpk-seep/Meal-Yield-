@@ -49,14 +49,22 @@ export interface Recipe {
   instructions: InstructionStep[];
   chefTips: string[];
   storageNotes: string;
-  nutrition: NutritionInfo;
+  nutrition?: NutritionInfo;
   pinterest: PinterestMetadata;
   publishedDate: string;
+  updatedDate?: string;
   author: {
     name: string;
     role: string;
     bio: string;
   };
+  sourceCredits?: string;
+  sourceUrl?: string;
+  photoCredits?: string;
+  dietaryNotes?: string[];
+  verificationStatus?: 'Kitchen Tested' | 'Editorial Draft' | 'Culinary Adaptation';
+  metaDescription?: string;
+  seoTitle?: string;
 }
 
 export interface ArticleSection {
@@ -85,6 +93,7 @@ export interface Article {
   author: {
     name: string;
     role: string;
+    bio?: string;
   };
   tags: string[];
   sections: ArticleSection[];

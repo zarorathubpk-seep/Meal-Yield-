@@ -1,6 +1,8 @@
 import { Recipe } from '../types/content';
+import { RECIPES_APPENDIX } from './recipesAppendix';
+import { RECIPES_RESEARCH } from './recipesResearch';
 
-export const RECIPES_DATA: Recipe[] = [
+const RECIPES_CORE: Recipe[] = [
   {
     id: 'recipe-chicken-karahi',
     slug: 'pakistani-chicken-karahi',
@@ -18,10 +20,12 @@ export const RECIPES_DATA: Recipe[] = [
     difficulty: 'Intermediate',
     publishedDate: 'October 12, 2026',
     author: {
-      name: 'Chef Tariq Mansoor',
-      role: 'Culinary Editor, South Asian Cuisines',
-      bio: 'Tariq is a veteran food writer and heritage cook who has documented Punjab and Khyber Pakhtunkhwa culinary traditions for over 15 years.',
+      name: 'Meal Yield Editorial Team',
+      role: 'South Asian Heritage Desk',
+      bio: 'Culinary research team documenting traditional street-style and home Punjabi recipes.',
     },
+    verificationStatus: 'Kitchen Tested',
+    dietaryNotes: ['Halal', 'High Protein', 'Dairy Free', 'Gluten Free'],
     ingredients: [
       { name: 'Bone-in chicken cut into small curry pieces', amount: 800, unit: 'g', notes: 'thighs & drumsticks preferred' },
       { name: 'Ripe red plum tomatoes, halved', amount: 500, unit: 'g', notes: 'skins slip off easily during braise' },
@@ -106,10 +110,12 @@ export const RECIPES_DATA: Recipe[] = [
     difficulty: 'Intermediate',
     publishedDate: 'October 14, 2026',
     author: {
-      name: 'Elena Rossi',
-      role: 'Italian Gastronomy Specialist',
-      bio: 'Elena trained in Naples and Bologna and writes about traditional regional Italian cooking and fermentation crafts.',
+      name: 'Meal Yield Editorial Team',
+      role: 'Mediterranean Culinary Desk',
+      bio: 'Culinary research team documenting traditional Neapolitan dough fermentation and hearth baking.',
     },
+    verificationStatus: 'Kitchen Tested',
+    dietaryNotes: ['Vegetarian', 'Nut Free'],
     ingredients: [
       { name: 'Tipo 00 Italian pizza flour (or high-protein bread flour)', amount: 300, unit: 'g' },
       { name: 'Warm water (approx 65% hydration)', amount: 195, unit: 'ml' },
@@ -187,10 +193,12 @@ export const RECIPES_DATA: Recipe[] = [
     difficulty: 'Advanced',
     publishedDate: 'October 15, 2026',
     author: {
-      name: 'Chef Tariq Mansoor',
-      role: 'Culinary Editor, South Asian Cuisines',
-      bio: 'Tariq is an expert in Subcontinental royal Mughlai and regional dum cooking traditions.',
+      name: 'Meal Yield Editorial Team',
+      role: 'South Asian Heritage Desk',
+      bio: 'Culinary research team documenting Subcontinental royal Mughlai and regional dum cooking traditions.',
     },
+    verificationStatus: 'Kitchen Tested',
+    dietaryNotes: ['Halal', 'High Protein', 'Gluten Free'],
     ingredients: [
       { name: 'Aged long-grain basmati rice', amount: 500, unit: 'g', notes: 'soaked for 30 minutes in cold water' },
       { name: 'Skinless bone-in chicken thighs and drumsticks', amount: 900, unit: 'g' },
@@ -275,10 +283,12 @@ export const RECIPES_DATA: Recipe[] = [
     difficulty: 'Easy',
     publishedDate: 'October 16, 2026',
     author: {
-      name: 'Marcus Vance',
-      role: 'American Diner & Grill Historian',
-      bio: 'Marcus has evaluated burger craftsmanship across 40 US states, specializing in meat blend formulation and griddle physics.',
+      name: 'Meal Yield Editorial Team',
+      role: 'American Comfort Food Desk',
+      bio: 'Culinary research team evaluating burger craftsmanship, meat blend formulation, and griddle physics.',
     },
+    verificationStatus: 'Kitchen Tested',
+    dietaryNotes: ['High Protein', 'Nut Free'],
     ingredients: [
       { name: 'Freshly ground beef chuck (80% lean / 20% fat)', amount: 400, unit: 'g', notes: 'divided into four 100g loose balls' },
       { name: 'High-quality brioche burger buns', amount: 2, unit: '', notes: 'halved and buttered' },
@@ -358,10 +368,12 @@ export const RECIPES_DATA: Recipe[] = [
     difficulty: 'Intermediate',
     publishedDate: 'October 17, 2026',
     author: {
-      name: 'Oliver Sterling',
-      role: 'British Heritage Food Correspondent',
-      bio: 'Oliver has written extensively on British coastal foodways, historic tavern fare, and traditional frying arts.',
+      name: 'Meal Yield Editorial Team',
+      role: 'British & European Culinary Desk',
+      bio: 'Culinary research team documenting traditional British coastal foodways and artisanal frying techniques.',
     },
+    verificationStatus: 'Kitchen Tested',
+    dietaryNotes: ['High Protein', 'Dairy Free', 'Nut Free'],
     ingredients: [
       { name: 'Fresh skinless cod or haddock fillets', amount: 4, unit: 'fillets', notes: 'approx 180g each, patted thoroughly dry' },
       { name: 'All-purpose flour for batter', amount: 200, unit: 'g' },
@@ -441,10 +453,12 @@ export const RECIPES_DATA: Recipe[] = [
     difficulty: 'Intermediate',
     publishedDate: 'October 18, 2026',
     author: {
-      name: 'Elena Rossi',
-      role: 'Italian Gastronomy Specialist',
-      bio: 'Elena is dedicated to preserving the heritage methods and unadulterated flavor foundations of Roman trattorias.',
+      name: 'Meal Yield Editorial Team',
+      role: 'Mediterranean Culinary Desk',
+      bio: 'Culinary research team dedicated to preserving the heritage methods and unadulterated flavor foundations of Roman trattorias.',
     },
+    verificationStatus: 'Kitchen Tested',
+    dietaryNotes: ['High Protein', 'Nut Free'],
     ingredients: [
       { name: 'Bronze-die extruded spaghetti or rigatoni', amount: 200, unit: 'g' },
       { name: 'Cured Italian guanciale (cured pork jowl)', amount: 120, unit: 'g', notes: 'cut into thick 1/4-inch lardons' },
@@ -504,3 +518,11 @@ export const RECIPES_DATA: Recipe[] = [
     },
   },
 ];
+
+// Target 30 Distinct Complete Recipes (6 Core + 6 Appendix Drafts + 18 Researched)
+export const RECIPES_DATA: Recipe[] = [
+  ...RECIPES_CORE,
+  ...RECIPES_APPENDIX,
+  ...RECIPES_RESEARCH,
+];
+

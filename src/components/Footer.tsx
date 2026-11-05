@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Check, Compass, Heart } from 'lucide-react';
 import { ActivePage } from '../types/content';
+import { resolveImageUrl } from '../utils/imageHelper';
 
 interface FooterProps {
   onNavigate: (page: ActivePage) => void;
@@ -26,14 +27,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           {/* Brand Column (Col 1-4) */}
           <div className="lg:col-span-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#FDFBF7] text-[#143D2B] flex items-center justify-center font-bold text-lg shadow-sm">
-                <svg viewBox="0 0 32 32" className="w-6 h-6 fill-current">
-                  <path d="M8 21 C8 13 24 13 24 21 Z" />
-                  <rect x="7" y="21" width="18" height="2" rx="1" />
-                  <circle cx="16" cy="12" r="2" fill="#C85A32" />
-                  <path d="M16 12 C16 7 20 4 21 3 C20 7 18 9 16 12 Z" fill="#C85A32" />
-                </svg>
-              </div>
+              <img
+                src={resolveImageUrl('/images/meal-yield-chef-emblem.png')}
+                alt="Meal Yield Logo"
+                className="w-11 h-11 rounded-full object-cover shadow-sm border border-emerald-700/60 bg-white"
+              />
               <span className="font-editorial text-2xl font-bold tracking-tight text-[#FDFBF7]">
                 Meal Yield
               </span>
