@@ -1,4 +1,7 @@
 import { Recipe } from '../types/content';
+import { RECIPES_PAKISTANI } from './recipesPakistani';
+import { RECIPES_INDIAN } from './recipesIndian';
+import { RECIPES_BENGAL_SRI_LANKA } from './recipesBengalSriLanka';
 import { RECIPES_APPENDIX } from './recipesAppendix';
 import { RECIPES_RESEARCH } from './recipesResearch';
 
@@ -519,10 +522,91 @@ const RECIPES_CORE: Recipe[] = [
   },
 ];
 
-// Target 30 Distinct Complete Recipes (6 Core + 6 Appendix Drafts + 18 Researched)
-export const RECIPES_DATA: Recipe[] = [
-  ...RECIPES_CORE,
-  ...RECIPES_APPENDIX,
-  ...RECIPES_RESEARCH,
-];
+// Deduplicate recipes by slug, giving precedence to rich regional collections
+const recipeMap = new Map<string, Recipe>();
+
+// 1. Add background core, appendix, and research recipes
+[...RECIPES_CORE, ...RECIPES_APPENDIX, ...RECIPES_RESEARCH].forEach(recipe => {
+  recipeMap.set(recipe.slug, recipe);
+});
+
+// 2. Overwrite / enrich with authentic regional South Asian master collections
+[...RECIPES_BENGAL_SRI_LANKA, ...RECIPES_INDIAN, ...RECIPES_PAKISTANI].forEach(recipe => {
+  recipeMap.set(recipe.slug, recipe);
+});
+
+export const RECIPES_DATA: Recipe[] = Array.from(recipeMap.values());
+
+// Helper Utilities
+export function getRecipeBySlug(slug: string): Recipe | undefined {
+  return RECIPES_DATA.find(r => r.slug === slug);
+}
+
+export function getRelatedRecipes(currentSlug: string, limit: number = 3): Recipe[] {
+  const current = getRecipeBySlug(currentSlug);
+  if (!current) return RECIPES_DATA.slice(0, limit);
+
+  // If explicit related slugs defined
+  if (current.relatedRecipeSlugs && current.relatedRecipeSlugs.length > 0) {
+    const explicit = current.relatedRecipeSlugs
+      .map(s => getRecipeBySlug(s))
+      .filter((r): r is Recipe => Boolean(r));
+    if (explicit.length >= limit) return explicit.slice(0, limit);
+  }
+
+  // Fallback to same cuisine or category
+  const matches = RECIPES_DATA.filter(
+    r => r.slug !== currentSlug && (r.cuisine === current.cuisine || r.subcategory === current.subcategory)
+  );
+
+  return matches.slice(0, limit);
+}
+
+export interface PantryMatchResult {
+  recipe: Recipe;
+  matchedCount: number;
+  totalIngredients: number;
+  matchPercentage: number;
+  matchedIngredients: string[];
+  missingIngredients: string[];
+}
+
+export function matchRecipesByPantry(pantryItems: string[]): PantryMatchResult[] {
+  if (!pantryItems || pantryItems.length === 0) return [];
+  const normalizedPantry = pantryItems.map(p => p.toLowerCase().trim()).filter(Boolean);
+
+  const results: PantryMatchResult[] = [];
+
+  for (const recipe of RECIPES_DATA) {
+    const matched: string[] = [];
+    const missing: string[] = [];
+
+    for (const ing of recipe.ingredients) {
+      const ingLower = ing.name.toLowerCase();
+      const isMatch = normalizedPantry.some(p => ingLower.includes(p) || p.includes(ingLower.split(' ')[0]));
+      if (isMatch) {
+        matched.push(ing.name);
+      } else {
+        missing.push(ing.name);
+      }
+    }
+
+    const total = recipe.ingredients.length;
+    const matchPercentage = Math.round((matched.length / total) * 100);
+
+    if (matched.length > 0) {
+      results.push({
+        recipe,
+        matchedCount: matched.length,
+        totalIngredients: total,
+        matchPercentage,
+        matchedIngredients: matched,
+        missingIngredients: missing,
+      });
+    }
+  }
+
+  // Sort descending by match percentage, then by matched count
+  return results.sort((a, b) => b.matchPercentage - a.matchPercentage || b.matchedCount - a.matchedCount);
+}
 

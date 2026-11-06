@@ -36,7 +36,7 @@ export interface Recipe {
   title: string;
   subtitle: string;
   description: string;
-  cuisine: 'Pakistani' | 'Indian' | 'Bangladeshi' | 'American' | 'British' | 'Italian' | 'International';
+  cuisine: 'Pakistani' | 'Indian' | 'Bangladeshi' | 'Sri Lankan' | 'American' | 'British' | 'Italian' | 'International';
   category: 'Desi Food' | 'Western Food' | 'International';
   subcategory: string;
   image: string;
@@ -48,6 +48,12 @@ export interface Recipe {
   ingredients: IngredientItem[];
   instructions: InstructionStep[];
   chefTips: string[];
+  commonMistakes?: string[];
+  alternatives?: string[];
+  relatedRecipeSlugs?: string[];
+  mealType?: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snacks' | 'Dessert';
+  isVegetarian?: boolean;
+  spiceLevel?: 'Mild' | 'Medium' | 'Hot' | 'Extra Hot';
   storageNotes: string;
   nutrition?: NutritionInfo;
   pinterest: PinterestMetadata;

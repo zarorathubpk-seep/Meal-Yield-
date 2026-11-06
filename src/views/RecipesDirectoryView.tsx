@@ -20,11 +20,12 @@ export const RecipesDirectoryView: React.FC<RecipesDirectoryViewProps> = ({
   const cuisines = [
     'All',
     'Pakistani',
-    'Italian',
     'Indian',
+    'Bangladeshi',
+    'Sri Lankan',
+    'Italian',
     'American',
     'British',
-    'Bangladeshi',
   ];
 
   const filtered = RECIPES_DATA.filter((recipe) => {

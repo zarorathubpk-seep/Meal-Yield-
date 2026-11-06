@@ -25,7 +25,7 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Recipe } from '../types/content';
-import { Chef3DScene, ChefAction } from './Chef3DScene';
+import { CompactChefMascot, MascotAction } from './CompactChefMascot';
 import {
   playChefSound,
   speakChefText,
@@ -62,7 +62,7 @@ export const Interactive3DChef: React.FC<Interactive3DChefProps> = ({ currentRec
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
-  const [characterAction, setCharacterAction] = useState<ChefAction>('idle');
+  const [characterAction, setCharacterAction] = useState<MascotAction>('idle');
 
   // Dragging character state
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -74,20 +74,15 @@ export const Interactive3DChef: React.FC<Interactive3DChefProps> = ({ currentRec
     initY: 0,
   });
 
-  // 3D Canvas mount
-  const canvasMountRef = useRef<HTMLDivElement>(null);
-  const chefSceneRef = useRef<Chef3DScene | null>(null);
-
   // Initial welcome message
   const initialWelcome = currentRecipe
     ? `Hey there, food lover! I see you're exploring **${currentRecipe.title}**!
 Ask me about ingredient substitutions, how to scale it for a crowd, spice level adjustments, or click **Hear My Story** to listen to its history!`
-    : `Hey there, food lover!
+    : `Hey, food lover!
 Welcome to **Meal Yield**!
-I'm your little 3D Chef!
-Let's cook something delicious together!
+I'm your little chef! Let's cook something delicious together!
 
-Ask me to scale recipes, substitute ingredients, explain cooking science, or give you recipe ideas!`;
+Ask me to scale recipes, substitute ingredients, explain cooking science, or suggest authentic South Asian dishes!`;
 
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -103,40 +98,10 @@ Ask me to scale recipes, substitute ingredients, explain cooking science, or giv
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const speechBubbleTimerRef = useRef<any>(null);
 
-  // Initialize 3D Scene
-  useEffect(() => {
-    if (!canvasMountRef.current) return;
-
-    try {
-      const scene = new Chef3DScene(canvasMountRef.current);
-      chefSceneRef.current = scene;
-
-      // Handle window resize
-      const handleResize = () => {
-        if (canvasMountRef.current && chefSceneRef.current) {
-          chefSceneRef.current.resize(
-            canvasMountRef.current.clientWidth,
-            canvasMountRef.current.clientHeight
-          );
-        }
-      };
-      window.addEventListener('resize', handleResize);
-
-      return () => {
-        window.removeEventListener('resize', handleResize);
-        scene.dispose();
-        chefSceneRef.current = null;
-      };
-    } catch (err) {
-      console.warn('3D Chef WebGL initialization fallback:', err);
-    }
-  }, []);
-
   // Subscribe to speaking state
   useEffect(() => {
     const unsubscribe = subscribeChefSpeaking((speaking) => {
       setIsSpeaking(speaking);
-      chefSceneRef.current?.setSpeaking(speaking);
     });
 
     const handleExternalStoryRequest = (e: any) => {
@@ -183,7 +148,7 @@ Ask me to scale recipes, substitute ingredients, explain cooking science, or giv
     const welcomedInSession = sessionStorage.getItem('mealyield_welcomed');
     if (!welcomedInSession) {
       sessionStorage.setItem('mealyield_welcomed', 'true');
-      const welcomeLine = "Hey there, food lover! Welcome to Meal Yield! I'm your little chef! Let's cook something delicious together!";
+      const welcomeLine = "Hey, food lover! Welcome to Meal Yield! I'm your little chef. Let's cook something delicious!";
       showSpeechBubble(welcomeLine, 6000);
       triggerChefAction('wave', 4.5);
       playChefSound('tada');
@@ -219,18 +184,24 @@ Ask me to scale recipes, substitute ingredients, explain cooking science, or giv
     });
   }, [currentRecipe?.slug]);
 
-  // Trigger chef action with sound and 3D animation
-  const triggerChefAction = (action: ChefAction, duration = 3.5) => {
-    setCharacterAction(action);
-    chefSceneRef.current?.setAction(action, duration);
+  // Trigger chef action with sound and animation
+  const triggerChefAction = (action: string, duration = 3.5) => {
+    const validAction: MascotAction =
+      action === 'wave' || action === 'laugh' || action === 'nod' || action === 'present'
+        ? (action as MascotAction)
+        : action === 'dance' ? 'wave' : 'idle';
+    setCharacterAction(validAction);
+    setTimeout(() => {
+      setCharacterAction('idle');
+    }, duration * 1000);
 
-    if (action === 'dance') {
+    if (action === 'dance' || action === 'wave') {
       playChefSound('woohoo');
       try {
         confetti({
-          particleCount: 35,
-          spread: 60,
-          origin: { x: 0.85, y: 0.75 },
+          particleCount: 25,
+          spread: 50,
+          origin: { x: 0.9, y: 0.8 },
           colors: ['#143d2b', '#c85a32', '#d4af37'],
         });
       } catch {
@@ -238,8 +209,6 @@ Ask me to scale recipes, substitute ingredients, explain cooking science, or giv
       }
     } else if (action === 'laugh') {
       playChefSound('hehe');
-    } else if (action === 'wave') {
-      playChefSound('yummy');
     } else if (action === 'present') {
       playChefSound('delicious');
     }
@@ -300,14 +269,6 @@ Ask me to scale recipes, substitute ingredients, explain cooking science, or giv
     };
   }, [isDragging]);
 
-  // Mouse rotation for 3D character
-  const handleCanvasMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!canvasMountRef.current || !chefSceneRef.current) return;
-    const rect = canvasMountRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const normX = (x / rect.width) * 2 - 1;
-    chefSceneRef.current.setMouseRotation(normX);
-  };
 
   // Voice Recognition (Microphone button)
   const handleToggleVoiceInput = () => {
@@ -605,23 +566,20 @@ Ask me to scale recipes, substitute ingredients, explain cooking science, or giv
             </button>
           </div>
 
-          {/* Interactive 3D Canvas Container - Compact standard mascot size */}
+          {/* Interactive Chef Mascot Container - Compact standard proportions */}
           <div
-            className="relative w-[88px] h-[88px] sm:w-[125px] sm:h-[130px] cursor-grab active:cursor-grabbing hover:scale-105 transition-transform"
-            onMouseMove={handleCanvasMouseMove}
+            className="relative cursor-pointer transition-transform hover:scale-105 active:scale-95"
             onClick={() => {
               triggerChefAction('wave');
               setIsOpen(true);
             }}
-            title="Click to talk with your 3D Sous Chef! (Drag to move)"
+            title="Click to talk with your AI Chef!"
           >
-            {/* Three.js canvas mount */}
-            <div ref={canvasMountRef} className="w-full h-full" />
-
-            {/* Drag Handle indicator */}
-            <div className="absolute bottom-0 right-1 p-0.5 rounded-full bg-black/30 text-white/70 opacity-0 group-hover:opacity-100 transition-opacity">
-              <Move className="w-2.5 h-2.5" />
-            </div>
+            <CompactChefMascot
+              action={characterAction}
+              isSpeaking={isSpeaking}
+              className="w-[66px] h-[82px] sm:w-[84px] sm:h-[105px]"
+            />
 
             {/* Glowing pulse ring if speaking */}
             {isSpeaking && (

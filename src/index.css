@@ -105,3 +105,71 @@
   background-color: rgba(200, 90, 50, 0.2);
   color: #143D2B;
 }
+
+/* Lightweight Chef Mascot Keyframes */
+@keyframes chefIdle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes chefWave {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-12deg);
+  }
+  75% {
+    transform: rotate(14deg);
+  }
+}
+
+@keyframes chefNod {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+  }
+  30% {
+    transform: scale(1.05) translateY(-4px);
+  }
+  60% {
+    transform: scale(0.97) translateY(2px);
+  }
+}
+
+@keyframes chefPresent {
+  0%, 100% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-3px) rotate(-4deg);
+  }
+}
+
+.animate-chef-idle {
+  animation: chefIdle 3.6s ease-in-out infinite;
+}
+
+.animate-chef-wave {
+  animation: chefWave 1s ease-in-out infinite;
+}
+
+.animate-chef-nod {
+  animation: chefNod 0.5s ease-out;
+}
+
+.animate-chef-present {
+  animation: chefPresent 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-chef-idle,
+  .animate-chef-wave,
+  .animate-chef-nod,
+  .animate-chef-present {
+    animation: none !important;
+  }
+}

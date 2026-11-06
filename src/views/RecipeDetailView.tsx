@@ -18,7 +18,8 @@ import { PinterestModal } from '../components/PinterestModal';
 import { Tilt3D } from '../components/Tilt3D';
 import { RevBidSquareAd } from '../components/RevBidSquareAd';
 import { StoryAudioPlayer } from '../components/StoryAudioPlayer';
-import { RECIPES_DATA } from '../data/recipes';
+import { CookWithMeModal } from '../components/CookWithMeModal';
+import { RECIPES_DATA, getRelatedRecipes } from '../data/recipes';
 import { scaleIngredient, formatIngredientAmount, convertUnit } from '../utils/recipeCalculator';
 import { resolveImageUrl } from '../utils/imageHelper';
 import { ActivePage, Recipe } from '../types/content';
@@ -34,6 +35,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipe, onNa
   const [checkedIngredients, setCheckedIngredients] = useState<Record<number, boolean>>({});
   const [checkedSteps, setCheckedSteps] = useState<Record<number, boolean>>({});
   const [pinterestOpen, setPinterestOpen] = useState(false);
+  const [cookWithMeOpen, setCookWithMeOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const toggleIngredient = (idx: number) => {
@@ -56,7 +58,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipe, onNa
     }
   };
 
-  const relatedRecipes = RECIPES_DATA.filter((r) => r.id !== recipe.id).slice(0, 3);
+  const relatedRecipes = getRelatedRecipes(recipe.slug, 3);
 
   const schemaData = {
     '@context': 'https://schema.org',
@@ -160,6 +162,15 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipe, onNa
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setCookWithMeOpen(true)}
+              className="px-3.5 py-1.5 bg-[#143D2B] hover:bg-[#0e2c1e] text-amber-300 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-md transition-all hover:scale-105 border border-amber-400/30"
+              title="Open Step-by-Step Interactive Kitchen Counter Mode"
+            >
+              <ChefHat className="w-3.5 h-3.5 text-amber-400" />
+              <span>Cook With Me</span>
+            </button>
+
             <button
               onClick={() => {
                 const storyEvent = new CustomEvent('hear_recipe_story', { detail: { slug: recipe.slug } });
@@ -486,6 +497,42 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipe, onNa
               </ul>
             </div>
 
+            {/* Common Mistakes to Avoid (if provided) */}
+            {recipe.commonMistakes && recipe.commonMistakes.length > 0 && (
+              <div className="bg-red-50/50 rounded-3xl border border-red-200/60 p-6 sm:p-8">
+                <h4 className="font-editorial text-xl font-bold text-red-950 mb-3 flex items-center gap-2">
+                  <span className="text-red-600 font-bold">⚠</span>
+                  Common Mistakes to Avoid
+                </h4>
+                <ul className="space-y-2.5 text-xs sm:text-sm text-red-900/80">
+                  {recipe.commonMistakes.map((mistake, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <span className="text-red-500 font-bold">•</span>
+                      <span className="leading-relaxed">{mistake}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Ingredient Alternatives & Substitutions (if provided) */}
+            {recipe.alternatives && recipe.alternatives.length > 0 && (
+              <div className="bg-emerald-50/50 rounded-3xl border border-emerald-200/60 p-6 sm:p-8">
+                <h4 className="font-editorial text-xl font-bold text-emerald-950 mb-3 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-emerald-600" />
+                  Ingredient Swaps & Variations
+                </h4>
+                <ul className="space-y-2.5 text-xs sm:text-sm text-emerald-900/80">
+                  {recipe.alternatives.map((alt, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <span className="text-emerald-500 font-bold">•</span>
+                      <span className="leading-relaxed">{alt}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {/* Storage & Reheating */}
             <div className="p-6 bg-white rounded-3xl border border-[#EBE6DF] flex items-start gap-3">
               <Info className="w-5 h-5 text-[#143D2B] shrink-0 mt-0.5" />
@@ -538,6 +585,16 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipe, onNa
         title={recipe.title}
         url={`/recipe/${recipe.slug}`}
       />
+
+      {/* Interactive Cook With Me Modal */}
+      {cookWithMeOpen && (
+        <CookWithMeModal
+          recipe={recipe}
+          servings={servings}
+          onClose={() => setCookWithMeOpen(false)}
+          onUpdateServings={(newServings) => setServings(newServings)}
+        />
+      )}
 
     </div>
   );

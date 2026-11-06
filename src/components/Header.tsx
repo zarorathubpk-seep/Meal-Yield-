@@ -29,6 +29,7 @@ export const Header: React.FC<HeaderProps> = ({ activePage, onNavigate, onOpenSe
     { label: 'Pakistani', cuisine: 'Pakistani' },
     { label: 'Indian', cuisine: 'Indian' },
     { label: 'Bangladeshi', cuisine: 'Bangladeshi' },
+    { label: 'Sri Lankan', cuisine: 'Sri Lankan' },
     { label: 'American', cuisine: 'American' },
     { label: 'British', cuisine: 'British' },
     { label: 'Italian', cuisine: 'Italian' },
