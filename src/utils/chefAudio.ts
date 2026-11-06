@@ -1,8 +1,33 @@
 // Cute, energetic, procedural audio synthesizer and Web Speech API narrator
-// 100% zero-404, zero external dependencies, handles autoplay restrictions gracefully
+// 100% zero-404, zero external dependencies, robust autoplay & policy fallback handling
+
+export interface ChefSpeechOptions {
+  onStart?: () => void;
+  onEnd?: () => void;
+  onError?: (errorCode: string) => void;
+  queueIfBlocked?: boolean;
+  rate?: number;
+  pitch?: number;
+  volume?: number;
+}
+
+export type SoundEffectName = 'yummy' | 'woohoo' | 'tada' | 'hehe' | 'delicious' | 'ready' | 'click' | 'pop';
+export type SpeakListener = (isSpeaking: boolean, word?: string) => void;
+export type MuteListener = (isMuted: boolean) => void;
 
 let audioCtx: AudioContext | null = null;
 let isMutedState = false;
+let hasUserInteracted = false;
+let cachedVoices: SpeechSynthesisVoice[] = [];
+let isSpeechInitialized = false;
+
+// Subscribers
+const speakListeners = new Set<SpeakListener>();
+const muteListeners = new Set<MuteListener>();
+
+// Queue for audio delayed by browser autoplay restrictions
+let queuedAudioAction: (() => void) | null = null;
+let userInteractionListenerRegistered = false;
 
 // Check user audio preference in localStorage
 if (typeof window !== 'undefined') {
@@ -14,10 +39,112 @@ if (typeof window !== 'undefined') {
   } catch {
     // fallback
   }
+
+  const markInteracted = () => {
+    hasUserInteracted = true;
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
+  };
+  ['click', 'keydown', 'touchstart', 'pointerdown'].forEach((event) => {
+    window.addEventListener(event, markInteracted, { once: true, passive: true });
+  });
+
+  // Pre-initialize Speech Synthesis voices
+  initSpeechSynthesis();
+}
+
+/**
+ * Initializes and caches Web Speech API voices.
+ * Handles browsers where getVoices() is asynchronous (Chrome, Safari, Edge).
+ */
+export function initSpeechSynthesis(): void {
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+  if (isSpeechInitialized) return;
+  isSpeechInitialized = true;
+
+  const populateVoices = () => {
+    try {
+      const voices = window.speechSynthesis.getVoices();
+      if (voices && voices.length > 0) {
+        cachedVoices = voices;
+      }
+    } catch {
+      // guard against restricted browser environments
+    }
+  };
+
+  populateVoices();
+  if (typeof window.speechSynthesis.addEventListener === 'function') {
+    window.speechSynthesis.addEventListener('voiceschanged', populateVoices);
+  } else {
+    window.speechSynthesis.onvoiceschanged = populateVoices;
+  }
+}
+
+/**
+ * Cleans markdown formatting, links, backticks, and extra spacing
+ * so the synthesizer receives clean, natural prose.
+ */
+export function cleanSpeechText(text: string): string {
+  if (!text) return '';
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '$1') // Bold **text**
+    .replace(/\*(.*?)\*/g, '$1')     // Italic *text*
+    .replace(/__(.*?)__/g, '$1')     // Bold __text__
+    .replace(/_(.*?)_/g, '$1')       // Italic _text_
+    .replace(/\[(.*?)\]\(.*?\)/g, '$1') // [Label](url) -> Label
+    .replace(/#{1,6}\s?/g, '')       // Headers ###
+    .replace(/`{1,3}(.*?)`{1,3}/g, '$1') // Inline code `foo`
+    .replace(/^[•\-\*]\s+/gm, '')    // List bullets
+    .replace(/\s+/g, ' ')            // Normalize whitespace
+    .trim();
+}
+
+/**
+ * Checks whether an error code indicates browser autoplay or permission policy blocking.
+ */
+export function isAudioBlockedError(errorCode?: string): boolean {
+  if (!errorCode) return false;
+  const code = errorCode.toLowerCase();
+  return code === 'not-allowed' || code === 'blocked' || code === 'audio-busy';
+}
+
+/**
+ * Selects the highest quality, friendly English voice available in the browser.
+ */
+export function selectBestChefVoice(voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null {
+  if (!voices || voices.length === 0) return null;
+
+  // 1. Natural, neural, or friendly expressive voices
+  const naturalVoice = voices.find(
+    (v) =>
+      v.lang.startsWith('en') &&
+      (v.name.includes('Natural') ||
+        v.name.includes('Neural') ||
+        v.name.includes('Google') ||
+        v.name.includes('Samantha') ||
+        v.name.includes('Karen') ||
+        v.name.includes('Victoria') ||
+        v.name.includes('Jenny') ||
+        v.name.includes('Guy'))
+  );
+  if (naturalVoice) return naturalVoice;
+
+  // 2. Any en-US voice
+  const enUs = voices.find((v) => v.lang === 'en-US');
+  if (enUs) return enUs;
+
+  // 3. Any English voice
+  const anyEnglish = voices.find((v) => v.lang.startsWith('en'));
+  if (anyEnglish) return anyEnglish;
+
+  // 4. Default system voice
+  return voices[0] || null;
 }
 
 function getAudioContext(): AudioContext | null {
-  if (typeof window === 'undefined') return null;
+  if (typeof window === 'undefined' || !hasUserInteracted) return null;
   const AudioCtxClass = window.AudioContext || (window as any).webkitAudioContext;
   if (!AudioCtxClass) return null;
   if (!audioCtx) {
@@ -42,14 +169,54 @@ export function setChefMuted(muted: boolean): void {
       // ignore
     }
     if (muted && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
+      stopChefSpeech();
     }
   }
+  muteListeners.forEach((l) => l(muted));
+}
+
+export function subscribeChefMute(listener: MuteListener): () => void {
+  muteListeners.add(listener);
+  return () => muteListeners.delete(listener);
+}
+
+export function subscribeChefSpeaking(listener: SpeakListener): () => void {
+  speakListeners.add(listener);
+  return () => speakListeners.delete(listener);
+}
+
+function notifySpeaking(isSpeaking: boolean, word?: string) {
+  speakListeners.forEach((l) => l(isSpeaking, word));
+}
+
+function registerAutoplayResume() {
+  if (userInteractionListenerRegistered || typeof window === 'undefined') return;
+  userInteractionListenerRegistered = true;
+
+  const handleInteraction = () => {
+    // Resume audio context
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
+    // Execute pending queued voice greeting
+    if (queuedAudioAction) {
+      const action = queuedAudioAction;
+      queuedAudioAction = null;
+      setTimeout(() => action(), 100);
+    }
+    // Cleanup listeners
+    ['click', 'keydown', 'touchstart'].forEach((event) => {
+      window.removeEventListener(event, handleInteraction);
+    });
+    userInteractionListenerRegistered = false;
+  };
+
+  ['click', 'keydown', 'touchstart'].forEach((event) => {
+    window.addEventListener(event, handleInteraction, { once: true, passive: true });
+  });
 }
 
 // Procedural cute chef sound effects using Web Audio API oscillators
-export type SoundEffectName = 'yummy' | 'woohoo' | 'tada' | 'hehe' | 'delicious' | 'ready' | 'click' | 'pop';
-
 export function playChefSound(sound: SoundEffectName): void {
   if (isMutedState) return;
   const ctx = getAudioContext();
@@ -60,7 +227,6 @@ export function playChefSound(sound: SoundEffectName): void {
   try {
     switch (sound) {
       case 'yummy': {
-        // Melodic two-note chime (upward bright glissando)
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'triangle';
@@ -75,7 +241,6 @@ export function playChefSound(sound: SoundEffectName): void {
         break;
       }
       case 'woohoo': {
-        // Playful bounce chirp
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'sine';
@@ -91,7 +256,6 @@ export function playChefSound(sound: SoundEffectName): void {
         break;
       }
       case 'tada': {
-        // Major triad trumpet chime (C5 -> E5 -> G5)
         [523.25, 659.25, 783.99].forEach((freq, idx) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
@@ -107,7 +271,6 @@ export function playChefSound(sound: SoundEffectName): void {
         break;
       }
       case 'hehe': {
-        // Double chuckle blip
         [600, 750].forEach((freq, idx) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
@@ -124,7 +287,6 @@ export function playChefSound(sound: SoundEffectName): void {
         break;
       }
       case 'delicious': {
-        // Smooth warm bell
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'sine';
@@ -167,108 +329,67 @@ export function playChefSound(sound: SoundEffectName): void {
         break;
       }
     }
-  } catch {
-    // Graceful silent audio fallback
+  } catch (err) {
+    console.error('[AI Chef Audio] Web Audio playback blocked or failed:', err);
   }
 }
 
-// Global speaking state subscriber for mouth synchronization and 3D animation
-type SpeakListener = (isSpeaking: boolean, word?: string) => void;
-const speakListeners = new Set<SpeakListener>();
-
-export function subscribeChefSpeaking(listener: SpeakListener): () => void {
-  speakListeners.add(listener);
-  return () => speakListeners.delete(listener);
-}
-
-function notifySpeaking(isSpeaking: boolean, word?: string) {
-  speakListeners.forEach((l) => l(isSpeaking, word));
-}
-
-// Queue for audio delayed by browser autoplay restrictions
-let queuedAudioAction: (() => void) | null = null;
-let userInteractionListenerRegistered = false;
-
-function registerAutoplayResume() {
-  if (userInteractionListenerRegistered || typeof window === 'undefined') return;
-  userInteractionListenerRegistered = true;
-
-  const handleInteraction = () => {
-    // Resume audio context
-    if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume().catch(() => {});
-    }
-    // Execute pending queued voice greeting
-    if (queuedAudioAction) {
-      const action = queuedAudioAction;
-      queuedAudioAction = null;
-      setTimeout(() => action(), 100);
-    }
-    // Cleanup listeners
-    ['click', 'keydown', 'touchstart'].forEach((event) => {
-      window.removeEventListener(event, handleInteraction);
-    });
-    userInteractionListenerRegistered = false;
-  };
-
-  ['click', 'keydown', 'touchstart'].forEach((event) => {
-    window.addEventListener(event, handleInteraction, { once: true, passive: true });
-  });
-}
-
-// Natural text-to-speech with cute, friendly chef voice characteristics
-export function speakChefText(
-  text: string,
-  options?: {
-    onStart?: () => void;
-    onEnd?: () => void;
-    queueIfBlocked?: boolean;
-    rate?: number;
-    pitch?: number;
+/**
+ * Speaks text using the browser's Web Speech API SpeechSynthesis.
+ * Includes fallback mechanism for blocked audio, logging, and state synchronization.
+ */
+export function speakChefText(text: string, options?: ChefSpeechOptions): void {
+  // If muted, return immediately
+  if (isMutedState) {
+    options?.onEnd?.();
+    return;
   }
-): void {
-  if (isMutedState || typeof window === 'undefined' || !('speechSynthesis' in window)) {
+
+  // Check browser support
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+    console.error('[AI Chef Speech] Web Speech API is not supported or blocked in this browser environment.');
+    options?.onError?.('unsupported');
+    options?.onEnd?.();
+    return;
+  }
+
+  const cleanText = cleanSpeechText(text);
+  if (!cleanText) {
     options?.onEnd?.();
     return;
   }
 
   const performSpeak = () => {
-    window.speechSynthesis.cancel();
-
-    // Clean markdown formatting before speaking
-    const cleanText = text
-      .replace(/\*\*(.*?)\*\*/g, '$1')
-      .replace(/\*(.*?)\*/g, '$1')
-      .replace(/\[(.*?)\]\(.*?\)/g, '$1')
-      .replace(/#{1,6}\s?/g, '')
-      .replace(/`{1,3}(.*?)`{1,3}/g, '$1')
-      .replace(/\n+/g, ' ')
-      .trim();
-
-    if (!cleanText) {
+    // If user muted between scheduling and execution, abort
+    if (isMutedState) {
       options?.onEnd?.();
       return;
     }
 
+    try {
+      window.speechSynthesis.cancel();
+    } catch {
+      // guard against browser cancellation errors
+    }
+
     const utterance = new SpeechSynthesisUtterance(cleanText);
 
-    // Pick cute, friendly, natural English voice if available
-    const voices = window.speechSynthesis.getVoices();
-    const preferredVoice =
-      voices.find(
-        (v) =>
-          (v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Karen') || v.name.includes('Victoria'))) ||
-          v.lang === 'en-US'
-      ) || voices.find((v) => v.lang.startsWith('en'));
+    // Get voices from cache or current API
+    const currentVoices =
+      cachedVoices.length > 0 ? cachedVoices : window.speechSynthesis.getVoices();
+    if (currentVoices && currentVoices.length > 0) {
+      cachedVoices = currentVoices;
+    }
 
-    if (preferredVoice) {
-      utterance.voice = preferredVoice;
+    const selectedVoice = selectBestChefVoice(cachedVoices);
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
     }
 
     // Cute, energetic, friendly chef voice profile (slightly higher pitch, upbeat cadence)
     utterance.pitch = options?.pitch ?? 1.25;
     utterance.rate = options?.rate ?? 1.08;
-    utterance.volume = 1.0;
+    utterance.volume = options?.volume ?? 1.0;
 
     utterance.onstart = () => {
       notifySpeaking(true);
@@ -287,25 +408,68 @@ export function speakChefText(
       options?.onEnd?.();
     };
 
-    utterance.onerror = () => {
+    // Error handling & fallback mechanism
+    utterance.onerror = (event: SpeechSynthesisErrorEvent) => {
       notifySpeaking(false);
       options?.onEnd?.();
+
+      const errorCode = event.error || 'unknown';
+
+      // Check if browser blocked audio due to autoplay restrictions or missing activation
+      if (isAudioBlockedError(errorCode)) {
+        console.error(
+          `[AI Chef Speech] Audio playback blocked by browser policy (error: "${errorCode}"). Falling back to queued playback on user interaction.`
+        );
+
+        if (options?.queueIfBlocked) {
+          queuedAudioAction = performSpeak;
+          registerAutoplayResume();
+        }
+
+        // Dispatch fallback event so visual speech bubble or UI alert can be rendered
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(
+            new CustomEvent('chef_audio_blocked', {
+              detail: { text: cleanText, errorCode, reason: 'autoplay_blocked' },
+            })
+          );
+        }
+      } else if (errorCode !== 'canceled' && errorCode !== 'interrupted') {
+        console.error(`[AI Chef Speech] Speech synthesis error: "${errorCode}"`, event);
+      }
+
+      options?.onError?.(errorCode);
     };
 
     try {
       window.speechSynthesis.speak(utterance);
-    } catch {
+    } catch (err: any) {
+      console.error('[AI Chef Speech] Failed to execute window.speechSynthesis.speak:', err);
       notifySpeaking(false);
+      options?.onError?.(err?.message || 'speak_exception');
       options?.onEnd?.();
     }
   };
 
-  // If voices haven't loaded yet in Chrome
-  if (window.speechSynthesis.getVoices().length === 0) {
-    window.speechSynthesis.onvoiceschanged = () => {
-      window.speechSynthesis.onvoiceschanged = null;
+  // If voices have not loaded yet in Chromium
+  if (cachedVoices.length === 0 && window.speechSynthesis.getVoices().length === 0) {
+    const onVoices = () => {
+      cachedVoices = window.speechSynthesis.getVoices();
       performSpeak();
     };
+
+    if (typeof window.speechSynthesis.addEventListener === 'function') {
+      window.speechSynthesis.addEventListener('voiceschanged', onVoices, { once: true });
+    } else {
+      window.speechSynthesis.onvoiceschanged = onVoices;
+    }
+
+    // Safety timeout in case onvoiceschanged never fires
+    setTimeout(() => {
+      if (cachedVoices.length === 0) {
+        performSpeak();
+      }
+    }, 250);
   } else {
     performSpeak();
   }
@@ -317,28 +481,53 @@ export function speakChefText(
   }
 }
 
+/**
+ * Stops all speech synthesis and resets speaking state.
+ * Directly maps to window.speechSynthesis.cancel().
+ */
 export function stopChefSpeech(): void {
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
+    try {
+      window.speechSynthesis.cancel();
+    } catch (err) {
+      console.error('[AI Chef Speech] Error canceling speech synthesis:', err);
+    }
   }
   notifySpeaking(false);
   queuedAudioAction = null;
 }
 
+/**
+ * Pauses speech synthesis.
+ */
 export function pauseChefSpeech(): void {
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-    window.speechSynthesis.pause();
+    try {
+      window.speechSynthesis.pause();
+    } catch (err) {
+      console.error('[AI Chef Speech] Error pausing speech synthesis:', err);
+    }
     notifySpeaking(false);
   }
 }
 
+/**
+ * Resumes paused speech synthesis.
+ */
 export function resumeChefSpeech(): void {
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-    window.speechSynthesis.resume();
+    try {
+      window.speechSynthesis.resume();
+    } catch (err) {
+      console.error('[AI Chef Speech] Error resuming speech synthesis:', err);
+    }
     notifySpeaking(true);
   }
 }
 
+/**
+ * Checks whether speech synthesis is currently paused.
+ */
 export function isSpeechPaused(): boolean {
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
     return window.speechSynthesis.paused;

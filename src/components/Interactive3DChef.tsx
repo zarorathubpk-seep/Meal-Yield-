@@ -13,6 +13,7 @@ import {
   Check,
   Volume2,
   VolumeX,
+  Square,
   Mic,
   MicOff,
   Flame,
@@ -33,6 +34,7 @@ import {
   isChefMuted,
   setChefMuted,
   subscribeChefSpeaking,
+  subscribeChefMute,
 } from '../utils/chefAudio';
 import { RECIPE_STORIES, getStoryForRecipe } from '../data/recipeStories';
 
@@ -56,6 +58,7 @@ export const Interactive3DChef: React.FC<Interactive3DChefProps> = ({ currentRec
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMuted, setIsMuted] = useState(isChefMuted());
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [speakingMsgId, setSpeakingMsgId] = useState<string | null>(null);
   const [currentSpeechBubble, setCurrentSpeechBubble] = useState<string>('');
   const [selectedModel, setSelectedModel] = useState<ModelTier>('gemini-3.8-flash');
   const [inputMessage, setInputMessage] = useState('');
@@ -63,6 +66,16 @@ export const Interactive3DChef: React.FC<Interactive3DChefProps> = ({ currentRec
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [characterAction, setCharacterAction] = useState<MascotAction>('idle');
+
+  // Stop speaking handler mapped directly to speech synthesis cancel
+  const handleStopSpeaking = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    stopChefSpeech();
+    setIsSpeaking(false);
+    setSpeakingMsgId(null);
+    setCurrentSpeechBubble('');
+    setCharacterAction('idle');
+  };
 
   // Dragging character state
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -98,11 +111,25 @@ Ask me to scale recipes, substitute ingredients, explain cooking science, or sug
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const speechBubbleTimerRef = useRef<any>(null);
 
-  // Subscribe to speaking state
+  // Subscribe to speaking state, mute state, and blocked audio fallback
   useEffect(() => {
-    const unsubscribe = subscribeChefSpeaking((speaking) => {
+    const unsubscribeSpeaking = subscribeChefSpeaking((speaking) => {
       setIsSpeaking(speaking);
+      if (!speaking) {
+        setSpeakingMsgId(null);
+      }
     });
+
+    const unsubscribeMute = subscribeChefMute((muted) => {
+      setIsMuted(muted);
+    });
+
+    const handleAudioBlocked = (e: Event) => {
+      const customEvt = e as CustomEvent<{ text?: string; errorCode?: string }>;
+      if (customEvt.detail?.text) {
+        showSpeechBubble(customEvt.detail.text, 8000);
+      }
+    };
 
     const handleExternalStoryRequest = (e: any) => {
       const slug = e?.detail?.slug || currentRecipe?.slug;
@@ -117,11 +144,15 @@ Ask me to scale recipes, substitute ingredients, explain cooking science, or sug
         triggerChefAction(action, duration);
       }
     };
+
+    window.addEventListener('chef_audio_blocked', handleAudioBlocked);
     window.addEventListener('hear_recipe_story', handleExternalStoryRequest);
     window.addEventListener('chef_action_trigger', handleActionTrigger);
 
     return () => {
-      unsubscribe();
+      unsubscribeSpeaking();
+      unsubscribeMute();
+      window.removeEventListener('chef_audio_blocked', handleAudioBlocked);
       window.removeEventListener('hear_recipe_story', handleExternalStoryRequest);
       window.removeEventListener('chef_action_trigger', handleActionTrigger);
     };
@@ -223,7 +254,7 @@ Ask me to scale recipes, substitute ingredients, explain cooking science, or sug
     if (!newMuted) {
       playChefSound('pop');
     } else {
-      stopChefSpeech();
+      handleStopSpeaking();
     }
   };
 
@@ -526,6 +557,17 @@ Ask me to scale recipes, substitute ingredients, explain cooking science, or sug
         <div className="relative flex flex-col items-end group">
           {/* Quick Action Ribbon (Hover revealed on desktop) */}
           <div className="hidden sm:flex items-center gap-1 mb-1.5 bg-white/95 backdrop-blur-md px-2 py-1 rounded-full shadow-md border border-[#EBE6DF] opacity-90 group-hover:opacity-100 transition-opacity">
+            {isSpeaking && (
+              <button
+                onClick={handleStopSpeaking}
+                className="px-2 py-0.5 rounded-full bg-red-600 hover:bg-red-700 text-white text-[9px] font-bold flex items-center gap-1 transition-colors animate-pulse shadow-xs"
+                title="Stop speaking"
+                aria-label="Stop speaking"
+              >
+                <Square className="w-2.5 h-2.5 fill-current" />
+                <span>Stop</span>
+              </button>
+            )}
             <button
               onClick={() => triggerChefAction('wave')}
               className="p-1 rounded-full hover:bg-emerald-50 text-[#143D2B] transition-colors"
@@ -561,6 +603,7 @@ Ask me to scale recipes, substitute ingredients, explain cooking science, or sug
               onClick={handleToggleMute}
               className="p-1 rounded-full hover:bg-stone-100 text-[#52575C] transition-colors"
               title={isMuted ? 'Unmute chef voice' : 'Mute chef voice'}
+              aria-label={isMuted ? 'Unmute chef voice' : 'Mute chef voice'}
             >
               {isMuted ? <VolumeX className="w-3 h-3 text-red-500" /> : <Volume2 className="w-3 h-3 text-emerald-600" />}
             </button>
@@ -625,11 +668,23 @@ Ask me to scale recipes, substitute ingredients, explain cooking science, or sug
             </div>
 
             {/* Window Controls */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
+              {isSpeaking && (
+                <button
+                  onClick={handleStopSpeaking}
+                  className="px-2 py-1 bg-red-500/20 hover:bg-red-500/30 text-red-200 border border-red-400/40 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors animate-pulse"
+                  title="Stop speech"
+                  aria-label="Stop speech"
+                >
+                  <Square className="w-3 h-3 fill-current text-red-300" />
+                  <span>Stop</span>
+                </button>
+              )}
               <button
                 onClick={handleToggleMute}
                 className="p-1.5 text-emerald-300/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                 title={isMuted ? 'Unmute voice' : 'Mute voice'}
+                aria-label={isMuted ? 'Unmute voice' : 'Mute voice'}
               >
                 {isMuted ? <VolumeX className="w-4 h-4 text-red-300" /> : <Volume2 className="w-4 h-4" />}
               </button>
@@ -637,16 +692,18 @@ Ask me to scale recipes, substitute ingredients, explain cooking science, or sug
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="p-1.5 text-emerald-300/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors hidden sm:block"
                 title={isExpanded ? 'Restore size' : 'Expand window'}
+                aria-label={isExpanded ? 'Restore size' : 'Expand window'}
               >
                 {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
               </button>
               <button
                 onClick={() => {
-                  stopChefSpeech();
+                  handleStopSpeaking();
                   setIsOpen(false);
                 }}
                 className="p-1.5 text-emerald-300/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                 title="Close chat"
+                aria-label="Close chat"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -716,14 +773,45 @@ Ask me to scale recipes, substitute ingredients, explain cooking science, or sug
                       <div className="flex items-center gap-1.5">
                         <button
                           onClick={() => {
-                            speakChefText(msg.content);
-                            triggerChefAction('talk', 8.0);
+                            if (isSpeaking && speakingMsgId === msg.id) {
+                              handleStopSpeaking();
+                            } else {
+                              handleStopSpeaking();
+                              setSpeakingMsgId(msg.id);
+                              speakChefText(msg.content, {
+                                onStart: () => {
+                                  setIsSpeaking(true);
+                                  setSpeakingMsgId(msg.id);
+                                },
+                                onEnd: () => {
+                                  setIsSpeaking(false);
+                                  setSpeakingMsgId(null);
+                                },
+                                onError: () => {
+                                  setIsSpeaking(false);
+                                  setSpeakingMsgId(null);
+                                },
+                              });
+                              triggerChefAction('talk', 8.0);
+                            }
                           }}
-                          className="hover:opacity-100 flex items-center gap-0.5"
-                          title="Read aloud"
+                          className={`hover:opacity-100 flex items-center gap-1 font-medium transition-colors ${
+                            isSpeaking && speakingMsgId === msg.id ? 'text-red-600' : 'text-emerald-700'
+                          }`}
+                          title={isSpeaking && speakingMsgId === msg.id ? 'Stop speaking' : 'Read aloud'}
+                          aria-label={isSpeaking && speakingMsgId === msg.id ? 'Stop speaking' : 'Read aloud'}
                         >
-                          <Volume2 className="w-3 h-3 text-emerald-700" />
-                          <span>Speak</span>
+                          {isSpeaking && speakingMsgId === msg.id ? (
+                            <>
+                              <Square className="w-3 h-3 fill-current animate-pulse text-red-600" />
+                              <span className="font-semibold text-red-600">Stop</span>
+                            </>
+                          ) : (
+                            <>
+                              <Volume2 className="w-3 h-3 text-emerald-700" />
+                              <span>Speak</span>
+                            </>
+                          )}
                         </button>
                         <button
                           onClick={() => handleCopyMessage(msg.id, msg.content)}

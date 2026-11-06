@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, ChevronLeft, ChevronRight, Volume2, VolumeX, Play, Pause, RotateCcw, CheckCircle2, Clock, ChefHat, Sparkles } from 'lucide-react';
 import { Recipe } from '../types/content';
+import { speakChefText, stopChefSpeech } from '../utils/chefAudio';
 
 interface CookWithMeModalProps {
   recipe: Recipe;
@@ -79,34 +80,38 @@ export const CookWithMeModal: React.FC<CookWithMeModalProps> = ({
     };
   }, [timerRunning, timerSeconds]);
 
-  // Voice Readout
-  const handleToggleSpeech = () => {
-    if (!('speechSynthesis' in window)) return;
+  // Stop speech when changing steps or unmounting
+  useEffect(() => {
+    stopChefSpeech();
+    setIsSpeaking(false);
+  }, [currentStepIndex]);
 
+  useEffect(() => {
+    return () => {
+      stopChefSpeech();
+    };
+  }, []);
+
+  // Voice Readout mapped to central chef audio with error fallback
+  const handleToggleSpeech = () => {
     if (isSpeaking) {
-      window.speechSynthesis.cancel();
+      stopChefSpeech();
       setIsSpeaking(false);
       return;
     }
 
-    window.speechSynthesis.cancel();
     const textToRead = `Step ${currentStep.stepNumber}. ${currentStep.title}. ${currentStep.instruction}. ${
       currentStep.tip ? 'Chef tip: ' + currentStep.tip : ''
     }`;
 
-    const utterance = new SpeechSynthesisUtterance(textToRead);
-    utterance.rate = 0.95;
-    utterance.pitch = 1.05;
-
-    const voices = window.speechSynthesis.getVoices();
-    const englishVoice = voices.find(v => v.lang.startsWith('en')) || voices[0];
-    if (englishVoice) utterance.voice = englishVoice;
-
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-
     setIsSpeaking(true);
-    window.speechSynthesis.speak(utterance);
+    speakChefText(textToRead, {
+      rate: 1.0,
+      pitch: 1.1,
+      onStart: () => setIsSpeaking(true),
+      onEnd: () => setIsSpeaking(false),
+      onError: () => setIsSpeaking(false),
+    });
   };
 
   const handleToggleCompleted = (stepIdx: number) => {

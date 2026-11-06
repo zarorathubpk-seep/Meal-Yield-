@@ -1,17 +1,89 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- RevBid Publisher Script (loaded on mealyield.com production domain) -->
-    <script type="text/javascript" src="//prebid.revbid.net/21993/revbid.js" async crossorigin="anonymous" onerror="window.__revbid_unavailable=true;"></script>
+    <!-- Global Error Guard: Intercept cross-origin iframe security errors and external script errors -->
     <script>
-      // Prevent cross-origin script load errors (e.g., from ad network CDNs or prebid endpoints) from bubbling up as unhandled window error events
-      window.addEventListener('error', function(e) {
-        if (e && (e.message === 'Script error.' || (!e.filename && !e.lineno))) {
-          // Cross-origin script error from external ad network, suppress to keep app execution pristine
-          e.preventDefault && e.preventDefault();
-          return true;
+      (function() {
+        function shouldSuppress(msg, src) {
+          if (!msg && !src) return true;
+          var str = String(msg || '');
+          var file = String(src || '');
+          return (
+            str === 'Script error.' ||
+            str.indexOf('SecurityError') !== -1 ||
+            str.indexOf('Blocked a frame with origin') !== -1 ||
+            str.indexOf('cross-origin frame') !== -1 ||
+            str.indexOf('revbid') !== -1 ||
+            file.indexOf('revbid') !== -1 ||
+            file.indexOf('prebid') !== -1
+          );
         }
-      }, true);
+
+        var prevOnError = window.onerror;
+        window.onerror = function(msg, url, line, col, error) {
+          if (shouldSuppress(msg, url) || (error && shouldSuppress(error.message, ''))) {
+            return true;
+          }
+          if (typeof prevOnError === 'function') {
+            return prevOnError.apply(this, arguments);
+          }
+          return false;
+        };
+
+        window.addEventListener('error', function(e) {
+          if (!e) return;
+          var msg = e.message || (e.error && e.error.message) || '';
+          var src = e.filename || (e.target && e.target.src) || '';
+          if (shouldSuppress(msg, src)) {
+            e.preventDefault && e.preventDefault();
+            e.stopPropagation && e.stopPropagation();
+            e.stopImmediatePropagation && e.stopImmediatePropagation();
+            return true;
+          }
+        }, true);
+
+        window.addEventListener('unhandledrejection', function(e) {
+          if (!e) return;
+          var reason = e.reason;
+          var msg = reason && (reason.message || String(reason));
+          if (shouldSuppress(msg, '')) {
+            e.preventDefault && e.preventDefault();
+            return true;
+          }
+        });
+      })();
+    </script>
+
+    <!-- Safe RevBid Loader: Loads revbid.js on production mealyield.com / top-level windows without cross-origin frame violations -->
+    <script>
+      (function() {
+        var canAccessTop = false;
+        try {
+          canAccessTop = (window.self === window.top) || Boolean(window.top && window.top.document);
+        } catch (err) {
+          canAccessTop = false;
+        }
+
+        var isProduction = window.location.hostname === 'mealyield.com' || 
+                           window.location.hostname === 'www.mealyield.com' ||
+                           (typeof window.location.hostname === 'string' && window.location.hostname.endsWith('.mealyield.com'));
+
+        // RevBid is only whitelisted on mealyield.com domain. In preview, localhost, or sandboxed iframes,
+        // suppress script injection to prevent BunnyCDN 403 and cross-origin frame SecurityErrors.
+        if (isProduction && canAccessTop) {
+          var s = document.createElement('script');
+          s.type = 'text/javascript';
+          s.async = true;
+          s.crossOrigin = 'anonymous';
+          s.src = '//prebid.revbid.net/21993/revbid.js';
+          s.onerror = function() {
+            window.__revbid_unavailable = true;
+          };
+          document.head.appendChild(s);
+        } else {
+          window.__revbid_unavailable = true;
+        }
+      })();
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

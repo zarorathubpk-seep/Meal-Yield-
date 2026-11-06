@@ -10,6 +10,7 @@ import {
   ChevronDown,
   ChevronUp,
   ChefHat,
+  Square,
 } from 'lucide-react';
 import { Recipe } from '../types/content';
 import { getStoryForRecipe, RecipeStory } from '../data/recipeStories';
@@ -22,6 +23,7 @@ import {
   isChefMuted,
   setChefMuted,
   subscribeChefSpeaking,
+  subscribeChefMute,
   playChefSound,
 } from '../utils/chefAudio';
 
@@ -40,7 +42,7 @@ export const StoryAudioPlayer: React.FC<StoryAudioPlayerProps> = ({ recipe }) =>
   const fullNarration = `${story.historyText} ${story.culturalNote} ${story.funFact}`;
 
   useEffect(() => {
-    const unsubscribe = subscribeChefSpeaking((speaking) => {
+    const unsubscribeSpeaking = subscribeChefSpeaking((speaking) => {
       if (!speaking && !isSpeechPaused()) {
         setIsPlaying(false);
         setIsPaused(false);
@@ -50,16 +52,27 @@ export const StoryAudioPlayer: React.FC<StoryAudioPlayerProps> = ({ recipe }) =>
       }
     });
 
+    const unsubscribeMute = subscribeChefMute((muted) => {
+      setIsMuted(muted);
+    });
+
     return () => {
-      unsubscribe();
+      unsubscribeSpeaking();
+      unsubscribeMute();
     };
   }, []);
 
   // When recipe changes, stop previous narration
   useEffect(() => {
+    handleStop();
+  }, [recipe.slug]);
+
+  const handleStop = () => {
+    stopChefSpeech();
     setIsPlaying(false);
     setIsPaused(false);
-  }, [recipe.slug]);
+    window.dispatchEvent(new CustomEvent('chef_action_trigger', { detail: { action: 'idle' } }));
+  };
 
   const handlePlayPause = () => {
     if (isPlaying && !isPaused) {
@@ -92,13 +105,16 @@ export const StoryAudioPlayer: React.FC<StoryAudioPlayerProps> = ({ recipe }) =>
           playChefSound('delicious');
           window.dispatchEvent(new CustomEvent('chef_action_trigger', { detail: { action: 'dance', duration: 3.5 } }));
         },
+        onError: () => {
+          setIsPlaying(false);
+          setIsPaused(false);
+        },
       });
     }
   };
 
   const handleReplay = () => {
-    stopChefSpeech();
-    setIsPaused(false);
+    handleStop();
     playChefSound('ready');
     window.dispatchEvent(new CustomEvent('chef_action_trigger', { detail: { action: 'wave', duration: 2.5 } }));
 
@@ -116,6 +132,10 @@ export const StoryAudioPlayer: React.FC<StoryAudioPlayerProps> = ({ recipe }) =>
           setIsPaused(false);
           playChefSound('delicious');
         },
+        onError: () => {
+          setIsPlaying(false);
+          setIsPaused(false);
+        },
       });
     }, 250);
   };
@@ -126,6 +146,8 @@ export const StoryAudioPlayer: React.FC<StoryAudioPlayerProps> = ({ recipe }) =>
     setChefMuted(newMuted);
     if (!newMuted) {
       playChefSound('pop');
+    } else {
+      handleStop();
     }
   };
 
@@ -176,11 +198,24 @@ export const StoryAudioPlayer: React.FC<StoryAudioPlayerProps> = ({ recipe }) =>
             )}
           </button>
 
+          {/* Stop Button */}
+          {(isPlaying || isPaused) && (
+            <button
+              onClick={handleStop}
+              className="p-1.5 rounded-lg text-red-300 hover:text-white hover:bg-red-950/40 transition-colors"
+              title="Stop narration"
+              aria-label="Stop narration"
+            >
+              <Square className="w-3.5 h-3.5 fill-current text-red-400" />
+            </button>
+          )}
+
           {/* Replay Button */}
           <button
             onClick={handleReplay}
             className="p-1.5 rounded-lg text-emerald-200 hover:text-white hover:bg-white/10 transition-colors"
             title="Replay from start"
+            aria-label="Replay from start"
           >
             <RotateCcw className="w-4 h-4" />
           </button>
@@ -194,6 +229,7 @@ export const StoryAudioPlayer: React.FC<StoryAudioPlayerProps> = ({ recipe }) =>
                 : 'text-emerald-200 hover:text-white hover:bg-white/10'
             }`}
             title={isMuted ? 'Unmute voice' : 'Mute voice'}
+            aria-label={isMuted ? 'Unmute voice' : 'Mute voice'}
           >
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
           </button>
