@@ -926,3 +926,47 @@ pubmatic.com, 158810, RESELLER, 5d62403b186f2ace
 rubiconproject.com, 19814, RESELLER, 0bfd66d529a55807
 appnexus.com, 10040, RESELLER
 smartadserver.com, 2491, RESELLER
+# RevBid + Waardex
+waardex.com, 229314, DIRECT
+crystall.io, 329315, DIRECT
+vidazoo.com, 607d92e73f4edb0015d56481, DIRECT, b6ada874b4d7d0b2
+trustedstack.com, TS4IPKUT2, DIRECT
+ssp.e-volution.ai, AJxF6R684a9M6CaTvK, DIRECT
+flashb.id, 8a54c501-125e-5c96-9884-e63904a9b974, DIRECT
+risecodes.com, 6a2fbbadf39edd0001c36b9d, DIRECT
+toponad.com,16a3a5c0575e41, RESELLER, 1d49fe424a1a456d
+smilewanted.com, 6216, RESELLER
+adipolo.com, 391, DIRECT
+supply.colossusssp.com, 916, RESELLER, 6c5b49d96ec1b458
+adyoulike.com, 34b00957883946eec005cac0dbe4f7c1, DIRECT
+spotim.market, fd79e458b530aabcd3e31c0586e58577, DIRECT, 077e5f709d15bdbb
+adform.com, 3451, RESELLER, 9f5210a2f0999e32
+152media.info, 152M1054, RESELLER
+amxrtb.com, 105199329, DIRECT
+adagio.io, 1134, RESELLER
+# RevBid + Meazy
+meazy.tech, 63953, DIRECT
+richaudience.com, 44J9JOh4CZ, RESELLER
+loopme.com, 22382, RESELLER, 6c8d5f95897a5a3b
+adsinteractive.com, 83429, RESELLER
+openx.com, 540298543, RESELLER, 6a698e2ec38604c6
+zetaglobal.net, 633, RESELLER
+video.unrulymedia.com, 2148207460, RESELLER
+pubmatic.com, 158154, RESELLER, 5d62403b186f2ace
+xandr.com, 13799, RESELLER
+# RevBid + VDO
+vdo.ai, 20161, DIRECT
+improvedigital.com, 2918, DIRECT
+minutemedia.com, 01m3ydhbx2wz, DIRECT
+smaato.com, 1100060574, RESELLER, 07bcf65f187117b4
+e-planning.net,6e8c3f6ec28f15ef,DIRECT,c1ba615865ed87b2
+adagio.io, 1442, RESELLER
+adsmovil.com, JKHGrlkjds90, DIRECT
+trustedstack.com, TS42L3GWW, DIRECT
+richaudience.com, 1fsNorHWpU, RESELLER
+apester.com, 11103, DIRECT
+thebrave.io, 1234586, RESELLER, c25b2154543746ac
+nobid.io, 219137, DIRECT
+flashb.id, 22a897ca-8cd1-59a3-b4d5-a3cd7a23486b, DIRECT
+152media.info, 152M166, RESELLER
+lunamedia.io, 6381f48c-46a9-43f7-8264-202a651be2a9, DIRECT, 524ecb396915caaf
